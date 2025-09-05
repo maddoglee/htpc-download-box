@@ -21,10 +21,9 @@ services:
       - PUID=1000               # Optional
       - PGID=1000               # Optional
       - TZ=Australia/Sydney     # Optional
-      - WEBUI_PORT=8080         # Optional
-      - QBT_WEBUI_USERNAME=admin
-      - QBT_WEBUI_PASSWORD=password
-
+      - WEBUI_PORT=8080         # When accessing the webui, check the docker logs for the randomly generated password.
+      #you also need a reverse proxy to access this if it is in the vpn! I'm using Caddy.
+    restart: unless-stopped
     network_mode: "service:nordvpn"
     depends_on:
       - nordvpn
