@@ -22,6 +22,9 @@ services:
       - PGID=1000               # Optional
       - TZ=Australia/Sydney     # Optional
       - WEBUI_PORT=8080         # Optional
+      - QBT_WEBUI_USERNAME=admin
+      - QBT_WEBUI_PASSWORD=password
+
     network_mode: "service:nordvpn"
     depends_on:
       - nordvpn
