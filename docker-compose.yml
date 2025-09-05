@@ -1,34 +1,38 @@
-version: "3.4"
 services:
-  vpn:
-    container_name: vpn
-    image: dperson/openvpn-client:latest
+  nordvpn:
+    image: ghcr.io/bubuntux/nordvpn
+    container_name: nordvpn
+    restart: unless-stopped
     cap_add:
-      - net_admin # required to modify network interfaces
-    restart: unless-stopped
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    volumes:
-      - /dev/net:/dev/net:z # tun device
-      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
-    security_opt:
-      - label:disable
+      - NET_ADMIN               # Required
+      - NET_RAW                 # Required
+    environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
+      - TOKEN=${NORDVPN_TOKEN}
+      - CONNECT=Australia    
+      - TECHNOLOGY=NordLynx
+      - NETWORK=192.168.1.0/24  # So it can be accessed within the local network
     ports:
-      - 8112:8112 # port for deluge web UI to be reachable from local network
-    command: '-f "" -r 192.168.1.0/24' # enable firewall and route local network traffic
+      - 8112:8112
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
 
-  deluge:
-    container_name: deluge
-    image: linuxserver/deluge:latest
-    restart: unless-stopped
-    network_mode: service:vpn # run on the vpn network
+  qbittorrent:
+    image: linuxserver/qbittorrent:arm64v8-latest
+    container_name: qbittorrent
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=1000               # Optional
+      - PGID=1000               # Optional
+      - TZ=Australia/Sydney     # Optional
+      - WEBUI_PORT=8080         # Optional
+    network_mode: "service:nordvpn"
+    depends_on:
+      - nordvpn
     volumes:
-      - ${ROOT}/downloads:/downloads # downloads folder
-      - ${ROOT}/config/deluge:/config # config files
+      - ./config/qbittorrent:/config
+      - ${DOWNLOADS}/downloads:/downloads
+      
+# The torrent service would be available at http://localhost:8080/ 
+# or anywhere inside of the local network http://192.168.1.xxx:8080
 
   jackett:
     container_name: jackett
@@ -41,8 +45,8 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/downloads/torrent-blackhole:/downloads # place where to put .torrent files for manual download
-      - ${ROOT}/config/jackett:/config # config files
+      - ${DOWNLOADS}/torrent-blackhole:/downloads # place where to put .torrent files for manual download
+      - ./config/jackett:/config # config files
 
   nzbget:
     container_name: nzbget
@@ -54,8 +58,8 @@ services:
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
     volumes:
-      - ${ROOT}/downloads:/downloads # download folder
-      - ${ROOT}/config/nzbget:/config # config files
+      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ./config/nzbget:/config # config files
 
   sonarr:
     container_name: sonarr
@@ -68,9 +72,9 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/sonarr:/config # config files
-      - ${ROOT}/complete/tv:/tv # tv shows folder
-      - ${ROOT}/downloads:/downloads # download folder
+      - ./config/sonarr:/config # config files
+      - ${MEDIA}/TV_Shows:/tv # tv shows folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
 
   radarr:
     container_name: radarr
@@ -83,25 +87,13 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/radarr:/config # config files
-      - ${ROOT}/complete/movies:/movies # movies folder
-      - ${ROOT}/downloads:/downloads # download folder
-
-  plex-server:
-    container_name: plex-server
-    image: plexinc/pms-docker:latest
-    restart: unless-stopped
-    environment:
-      - TZ=${TZ} # timezone, defined in .env
-    network_mode: host
-    volumes:
-      - ${ROOT}/config/plex/db:/config # plex database
-      - ${ROOT}/config/plex/transcode:/transcode # temp transcoded files
-      - ${ROOT}/complete:/data # media library
+      - ./config/radarr:/config # config files
+      - ${MEDIA}/Movies:/movies # movies folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
 
   bazarr:
     container_name: bazarr
-    image: linuxserver/bazarr
+    image: linuxserver/bazarr:latest
     restart: unless-stopped
     network_mode: host
     environment:
@@ -110,6 +102,7 @@ services:
       - TZ=${TZ} # timezone, defined in .env
       - UMASK_SET=022 #optional
     volumes:
-      - ${ROOT}/config/bazarr:/config # config files
-      - ${ROOT}/complete/movies:/movies # movies folder
-      - ${ROOT}/complete/tv:/tv # tv shows folder
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/bazarr:/config # config files
+      - ${MEDIA}/Movies:/movies # movies folder
+      - ${MEDIA}/TV_Shows:/tv # tv shows folder
