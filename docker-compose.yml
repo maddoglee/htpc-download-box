@@ -50,8 +50,8 @@ services:
     volumes:
       - ./config/prowlarr:/config
       - /etc/localtime:/etc/localtime:ro
-    ports:
-      - 9696:9696                # Web UI port
+    #ports:
+    #  - 9696:9696                # Web UI port
 
   caddy:
     image: caddy:latest
