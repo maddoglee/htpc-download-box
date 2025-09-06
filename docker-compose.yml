@@ -1,3 +1,7 @@
+networks:
+  media_net:
+    driver: bridge
+
 services:
   nordvpn:
     image: ghcr.io/bubuntux/nordvpn
@@ -34,19 +38,38 @@ services:
 # The torrent service would be available at http://localhost:8080/ 
 # or anywhere inside of the local network http://192.168.1.xxx:8080
 
-  jackett:
-    container_name: jackett
-    image: linuxserver/jackett:latest
+
+services:
+  prowlarr:
+    image: linuxserver/prowlarr:latest
+    container_name: prowlarr
     restart: unless-stopped
-    network_mode: host
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
+    network_mode: "service:nordvpn"
+    depends_on:
+      - nordvpn
     volumes:
+      - ./config/prowlarr:/config
       - /etc/localtime:/etc/localtime:ro
-      - ${DOWNLOADS}/torrent-blackhole:/downloads # place where to put .torrent files for manual download
-      - ./config/jackett:/config # config files
+    ports:
+      - 9696:9696                # Web UI port
+
+  # jackett:
+  #   container_name: jackett
+  #   image: linuxserver/jackett:latest
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   environment:
+  #     - PUID=${PUID} # default user id, defined in .env
+  #     - PGID=${PGID} # default group id, defined in .env
+  #     - TZ=${TZ} # timezone, defined in .env
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ${DOWNLOADS}/torrent-blackhole:/downloads # place where to put .torrent files for manual download
+  #     - ./config/jackett:/config # config files
 
   nzbget:
     container_name: nzbget
@@ -66,6 +89,8 @@ services:
     image: linuxserver/sonarr:latest
     restart: unless-stopped
     network_mode: host
+    networks:
+      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
@@ -81,6 +106,8 @@ services:
     image: linuxserver/radarr:latest
     restart: unless-stopped
     network_mode: host
+    networks:
+      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
@@ -96,6 +123,8 @@ services:
     image: linuxserver/bazarr:latest
     restart: unless-stopped
     network_mode: host
+    networks:
+      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
