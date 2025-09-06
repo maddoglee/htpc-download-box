@@ -151,8 +151,8 @@ services:
     container_name: portainer
     restart: unless-stopped
     network_mode: host
-    ports:
-      - "9000:9000"
+#    ports:
+#      - "9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
