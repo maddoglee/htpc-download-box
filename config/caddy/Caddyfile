@@ -2,10 +2,10 @@
     auto_https off
 }
 
-http://prowlarr.local {
+http://192.168.1.16 {
     reverse_proxy prowlarr:9696
 }
 
-http://qbittorrent.local {
+http://192.168.1.16 {
     reverse_proxy qbittorrent:8080
 }
