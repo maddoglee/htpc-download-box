@@ -1,6 +1,5 @@
 http://prowlarr.local {
-    reverse_proxy prowlarr:9696 {
-    }
+    reverse_proxy prowlarr:9696
 }
 
 http://qbittorrent.local {
