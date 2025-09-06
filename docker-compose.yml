@@ -1,7 +1,3 @@
-networks:
-  media_net:
-    driver: bridge
-
 services:
   nordvpn:
     image: ghcr.io/bubuntux/nordvpn
@@ -17,6 +13,9 @@ services:
       - NETWORK=192.168.1.0/24  # So it can be accessed within the local network
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
+    networks:
+      - media_net
+
 
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
@@ -37,9 +36,6 @@ services:
       
 # The torrent service would be available at http://localhost:8080/ 
 # or anywhere inside of the local network http://192.168.1.xxx:8080
-
-
-services:
   prowlarr:
     image: linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -56,6 +52,24 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 9696:9696                # Web UI port
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./config/caddy/data:/data
+      - ./config/caddy/config:/config
+    networks:
+      - media_net
+    depends_on:
+      - prowlarr
+      - qbittorrent
+
 
   # jackett:
   #   container_name: jackett
@@ -89,8 +103,6 @@ services:
     image: linuxserver/sonarr:latest
     restart: unless-stopped
     network_mode: host
-    networks:
-      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
@@ -106,8 +118,6 @@ services:
     image: linuxserver/radarr:latest
     restart: unless-stopped
     network_mode: host
-    networks:
-      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
@@ -123,8 +133,6 @@ services:
     image: linuxserver/bazarr:latest
     restart: unless-stopped
     network_mode: host
-    networks:
-      - media_net
     environment:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
@@ -135,3 +143,10 @@ services:
       - ./config/bazarr:/config # config files
       - ${MEDIA}/Movies:/movies # movies folder
       - ${MEDIA}/TV_Shows:/tv # tv shows folder
+
+networks:
+  media_net:
+    driver: bridge
+
+# Use host for Sonarr, Radarr, Bazarr, NZBGet — they benefit from LAN access.
+# Use media_net for Caddy, Prowlarr, qBittorrent — they need internal DNS and reverse proxying.
