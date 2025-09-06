@@ -111,7 +111,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config # config files
-      - ${MEDIA}/TV_Shows:/tv # tv shows folder
+      - ${MEDIA}/:/videos:/tv # tv shows folder
       - ${DOWNLOADS}/downloads:/downloads # download folder
 
   radarr:
@@ -126,7 +126,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config # config files
-      - ${MEDIA}/Movies:/movies # movies folder
+      - ${MEDIA}/:/videos # movies folder
       - ${DOWNLOADS}/downloads:/downloads # download folder
 
   bazarr:
@@ -142,8 +142,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config # config files
-      - ${MEDIA}/Movies:/movies # movies folder
-      - ${MEDIA}/TV_Shows:/tv # tv shows folder
+#      - ${MEDIA}/Movies:/movies # movies folder
+#      - ${MEDIA}/TV_Shows:/tv # tv shows folder
+      - ${MEDIA}/:/videos
 
   portainer:
     image: portainer/portainer-ce:latest
