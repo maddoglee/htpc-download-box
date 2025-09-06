@@ -2,10 +2,10 @@
     auto_https off
 }
 
-:9696 {
-    reverse_proxy prowlarr:9696
+:8080 {
+    reverse_proxy http://nordvpn:8080
 }
 
-:8080 {
-    reverse_proxy qbittorrent:8080
+:9696 {
+    reverse_proxy http://nordvpn:9696
 }
