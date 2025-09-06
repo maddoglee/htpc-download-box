@@ -144,7 +144,7 @@ services:
       - ${MEDIA}/Movies:/movies # movies folder
       - ${MEDIA}/TV_Shows:/tv # tv shows folder
 
-portainer:
+  portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: unless-stopped
