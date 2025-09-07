@@ -9,3 +9,7 @@
 :9696 {
     reverse_proxy http://nordvpn:9696
 }
+
+:6789 {
+    reverse_proxy http://nordvpn:6789
+}
