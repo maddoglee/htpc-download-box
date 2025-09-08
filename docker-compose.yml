@@ -60,6 +60,7 @@ services:
     ports:
       - "8080:8080"
       - "9696:9696"
+      - "6789:6789"
       - "80:80"
       - "443:443"
     volumes:
@@ -147,6 +148,28 @@ services:
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
       - ${MEDIA}/:/videos
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    network_mode: host
+    environment:
+      - LOG_LEVEL=debug
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+#      - PORT=5055 #optional
+#    ports:
+#      - 5055:5055
+    volumes:
+      - ./config/jellyseer:/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    restart: unless-stopped
 
   portainer:
     image: portainer/portainer-ce:latest
