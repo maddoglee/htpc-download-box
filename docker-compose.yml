@@ -158,7 +158,7 @@ services:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
-#      - PORT=5055 #optional
+      - PORT=5055 #optional
 #    ports:
 #      - 5055:5055
     volumes:
