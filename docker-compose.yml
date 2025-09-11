@@ -114,8 +114,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config # config files
-      - ${MEDIA}/:/tv # tv shows folder
-      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+      - ${MEDIA}/:/videos # tv shows folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
 
   radarr:
     container_name: radarr
@@ -129,8 +129,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config # config files
-      - ${MEDIA}/:/movies # movies folder
-      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+      - ${MEDIA}/:/videos # movies folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
   lidarr:
     container_name: lidarr
     image: lscr.io/linuxserver/lidarr:latest
@@ -144,7 +144,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/lidarr/config:/config
       - ${MUSIC}/:/music
-      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
 #    ports:
 #      - 8686:8686   
   bazarr:
@@ -161,7 +161,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config # config files
       - ${MEDIA}/:/videos # all media folder
-      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+      - ${DOWNLOADS}/downloads:/downloads # download folder
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
   jellyseerr:
