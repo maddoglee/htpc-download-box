@@ -22,7 +22,7 @@ services:
     hostname: nordlynx
     restart: unless-stopped
     ports:
-    #  - "8089:8089" # QbitTorrent UI
+#      - "8080:8080" # QbitTorrent UI
       - "51420:51420" # QbitTorrent
       - "51420:51420/udp" # QbitTorrent
     cap_add:
@@ -37,8 +37,14 @@ services:
 #      - net.ipv4.conf.all.src_valid_mark=1   # maybe
 #      - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
       - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
-    networks:
-      - media_net
+    healthcheck:
+      test: curl -s https://api.ipify.org || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+#    networks:
+#      - media_net
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
@@ -79,25 +85,25 @@ services:
     #ports:
     #  - 9696:9696                # Web UI port
 
-  caddy:
-    image: caddy:latest
-    container_name: caddy
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-      - "9696:9696"
-      - "6789:6789"
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./config/caddy/data:/data
-      - ./config/caddy/config:/config
-    networks:
-      - media_net
-    depends_on:
-#      - nordvpn
-      - nordlynx
+#   caddy:
+#     image: caddy:latest
+#     container_name: caddy
+#     restart: unless-stopped
+#     ports:
+#       - "8080:8080"
+#       - "9696:9696"
+#       - "6789:6789"
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
+#       - ./config/caddy/data:/data
+#       - ./config/caddy/config:/config
+#     networks:
+#       - media_net
+#     depends_on:
+# #      - nordvpn
+#       - nordlynx
 
   # jackett:
   #   container_name: jackett
@@ -173,8 +179,8 @@ services:
       - ./config/lidarr/config:/config
       - ${MUSIC}/:/music
       - ${DOWNLOADS}/downloads:/downloads # download folder
-#    ports:
-#      - 8686:8686   
+    ports:
+      - 8686:8686   
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
@@ -192,6 +198,8 @@ services:
       - ${DOWNLOADS}/downloads:/downloads # download folder
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
+    ports:
+      - 6767:6767
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
@@ -203,8 +211,8 @@ services:
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
       - PORT=5055 #optional
-#    ports:
-#      - 5055:5055
+    ports:
+      - 5055:5055
     volumes:
       - ./config/jellyseer:/app/config
 #    healthcheck:
@@ -226,8 +234,8 @@ services:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
-#    ports:
-#      - "${PORT:-8191}:8191"
+    ports:
+      - "${PORT:-8191}:8191"
 
   portainer:
     container_name: portainer
@@ -237,11 +245,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
-#    ports:
-#      - "9000:9000"
-networks:
-  media_net:
-    driver: bridge
+    ports:
+      - "9000:9000"
+#networks:
+#  media_net:
+#    driver: bridge
 
 # Use host for Sonarr, Radarr, Bazarr, NZBGet — they benefit from LAN access.
 # Use media_net for Caddy, Prowlarr, qBittorrent — they need internal DNS and reverse proxying.
