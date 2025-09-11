@@ -179,8 +179,8 @@ services:
       - ./config/lidarr/config:/config
       - ${MUSIC}/:/music
       - ${DOWNLOADS}/downloads:/downloads # download folder
-    ports:
-      - 8686:8686   
+    # ports:
+    #   - 8686:8686   
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
@@ -198,8 +198,8 @@ services:
       - ${DOWNLOADS}/downloads:/downloads # download folder
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
-    ports:
-      - 6767:6767
+    # ports:
+    #   - 6767:6767
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
@@ -211,8 +211,8 @@ services:
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
       - PORT=5055 #optional
-    ports:
-      - 5055:5055
+    # ports:
+    #   - 5055:5055
     volumes:
       - ./config/jellyseer:/app/config
 #    healthcheck:
@@ -234,8 +234,8 @@ services:
       - PUID=${PUID} # default user id, defined in .env
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
-    ports:
-      - "${PORT:-8191}:8191"
+    # ports:
+    #   - "${PORT:-8191}:8191"
 
   portainer:
     container_name: portainer
@@ -245,8 +245,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
-    ports:
-      - "9000:9000"
+    # ports:
+    #   - "9000:9000"
 #networks:
 #  media_net:
 #    driver: bridge
