@@ -146,8 +146,7 @@ services:
       - ${MUSIC}/:/music
       - ${DOWNLOADS}/downloads/complete:/downloads # download folder
 #    ports:
-#      - 8686:8686
-    restart: unless-stopped      
+#      - 8686:8686   
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
