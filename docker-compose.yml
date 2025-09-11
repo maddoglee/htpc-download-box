@@ -185,12 +185,26 @@ services:
 #      timeout: 3s
 #      interval: 15s
 #      retries: 3
-   
+  flaresolverr:
+    container_name: flaresolverr
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+#    ports:
+#      - "${PORT:-8191}:8191"
+
   portainer:
     container_name: portainer
     image: portainer/portainer-ce:latest
-    restart: unless-stopped
-    network_mode: host
+
 #    ports:
 #      - "9000:9000"
     volumes:
