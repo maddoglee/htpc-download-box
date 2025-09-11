@@ -22,7 +22,7 @@ services:
     hostname: nordlynx
     restart: unless-stopped
     ports:
-#      - "8080:8080" # QbitTorrent UI
+      - "8080:8080" # QbitTorrent UI
       - "51420:51420" # QbitTorrent
       - "51420:51420/udp" # QbitTorrent
     cap_add:
