@@ -3,13 +3,13 @@
 }
 
 :8080 {
-    reverse_proxy http://nordvpn:8080
+    reverse_proxy http://nordlynx:8080
 }
 
 :9696 {
-    reverse_proxy http://nordvpn:9696
+    reverse_proxy http://nordlynx:9696
 }
 
 :6789 {
-    reverse_proxy http://nordvpn:6789
+    reverse_proxy http://nordlynx:6789
 }
