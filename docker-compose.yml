@@ -204,13 +204,13 @@ services:
   portainer:
     container_name: portainer
     image: portainer/portainer-ce:latest
-
-#    ports:
-#      - "9000:9000"
+    restart: unless-stopped
+    network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
-
+#    ports:
+#      - "9000:9000"
 networks:
   media_net:
     driver: bridge
