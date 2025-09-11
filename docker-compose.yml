@@ -21,8 +21,11 @@ services:
     image: ghcr.io/bubuntux/nordlynx
     hostname: nordlynx
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "8080:8080" # QbitTorrent UI
+      - "9696:9696" # Prowler UI
       - "51420:51420" # QbitTorrent
       - "51420:51420/udp" # QbitTorrent
     cap_add:
