@@ -114,8 +114,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config # config files
-      - ${MEDIA}/:/videos:/tv # tv shows folder
-      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ${MEDIA}/:/tv # tv shows folder
+      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
 
   radarr:
     container_name: radarr
@@ -129,9 +129,25 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config # config files
-      - ${MEDIA}/:/videos # movies folder
-      - ${DOWNLOADS}/downloads:/downloads # download folder
-
+      - ${MEDIA}/:/movies # movies folder
+      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+  lidarr:
+    container_name: lidarr
+    image: lscr.io/linuxserver/lidarr:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/lidarr/config:/config
+      - ${MUSIC}/:/music
+      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
+#    ports:
+#      - 8686:8686
+    restart: unless-stopped      
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
@@ -145,13 +161,14 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config # config files
+      - ${MEDIA}/:/videos # all media folder
+      - ${DOWNLOADS}/downloads/complete:/downloads # download folder
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
-      - ${MEDIA}/:/videos
-
   jellyseerr:
-    image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+    restart: unless-stopped
     network_mode: host
     environment:
       - LOG_LEVEL=debug
@@ -163,17 +180,16 @@ services:
 #      - 5055:5055
     volumes:
       - ./config/jellyseer:/app/config
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 20s
-      timeout: 3s
-      interval: 15s
-      retries: 3
-    restart: unless-stopped
-
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+#      start_period: 20s
+#      timeout: 3s
+#      interval: 15s
+#      retries: 3
+   
   portainer:
-    image: portainer/portainer-ce:latest
     container_name: portainer
+    image: portainer/portainer-ce:latest
     restart: unless-stopped
     network_mode: host
 #    ports:
