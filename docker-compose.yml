@@ -1,21 +1,4 @@
 services:
-  # nordvpn:
-  #   image: ghcr.io/bubuntux/nordvpn
-  #   container_name: nordvpn
-  #   restart: unless-stopped
-  #   cap_add:
-  #     - NET_ADMIN               # Required
-  #     - NET_RAW                 # Required
-  #   environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
-  #     - TOKEN=${NORDVPN_TOKEN}
-  #     - CONNECT=Australia    
-  #     - TECHNOLOGY=NordLynx
-  #     - NETWORK=192.168.1.0/24  # So it can be accessed within the local network
-  #   sysctls:
-  #     - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
-  #   networks:
-  #     - media_net
-
   nordlynx:
     container_name: nordlynx
     image: ghcr.io/bubuntux/nordlynx
@@ -30,10 +13,10 @@ services:
       - "51420:51420/udp" # QbitTorrent
     cap_add:
       - NET_ADMIN                             # required
-#     - SYS_MODULE                            # maybe
+      - SYS_MODULE                            # maybe
     environment:
       - PRIVATE_KEY=${NORDLYNX_KEY}               # required - defined in .env
-      - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
+#      - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
       - NET_LOCAL=192.168.1.0/24  # So it can be accessed within the local network
       - TZ=${TZ} # timezone, defined in .env
     sysctls:
@@ -46,8 +29,6 @@ services:
       timeout: 10s
       retries: 5
 
-#    networks:
-#      - media_net
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
@@ -250,9 +231,6 @@ services:
       - ./config/portainer:/data
     # ports:
     #   - "9000:9000"
-#networks:
-#  media_net:
-#    driver: bridge
 
 # Use host for Sonarr, Radarr, Bazarr, NZBGet — they benefit from LAN access.
 # Use media_net for Caddy, Prowlarr, qBittorrent — they need internal DNS and reverse proxying.
