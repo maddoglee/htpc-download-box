@@ -28,6 +28,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 90s
 
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
