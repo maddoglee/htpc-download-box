@@ -9,8 +9,8 @@ services:
     ports:
       - "8080:8080" # QbitTorrent UI
       - "9696:9696" # Prowler UI
-      - "51420:51420" # QbitTorrent
-      - "51420:51420/udp" # QbitTorrent
+      - "8973:8973" # QbitTorrent
+      - "8973:8973/udp" # QbitTorrent
     cap_add:
       - NET_ADMIN                             # required
       - SYS_MODULE                            # maybe
