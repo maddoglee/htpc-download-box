@@ -17,7 +17,7 @@ services:
     environment:
       - PRIVATE_KEY=${NORDLYNX_KEY}               # required - defined in .env
 #      - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
-      - NET_LOCAL=192.168.1.0/24  # So it can be accessed within the local network
+      - NET_LOCAL=192.168.1.0/24,10.6.0.2/32  # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
       - TZ=${TZ} # timezone, defined in .env
     sysctls:
 #      - net.ipv4.conf.all.src_valid_mark=1   # maybe
