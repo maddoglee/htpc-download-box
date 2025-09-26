@@ -34,9 +34,9 @@ services:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
     environment:
-      - PUID=1000               # Optional
-      - PGID=1000               # Optional
-      - TZ=Australia/Sydney     # Optional
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
       - WEBUI_PORT=8080         # When accessing the webui, check the docker logs for the randomly generated password.
       #you also need a reverse proxy to access this if it is in the vpn! I'm using Caddy.
     restart: unless-stopped
@@ -47,9 +47,9 @@ services:
       - nordlynx
     volumes:
       - ./config/qbittorrent:/config
-      - ${DOWNLOADS}/downloads:/downloads
+      - ${DATA}/torrents:/data/torrents
       
-# The torrent service would be available at http://localhost:8080/ 
+# The torrent service should be available at http://localhost:8080/ 
 # or anywhere inside of the local network http://192.168.1.xxx:8080
   prowlarr:
     image: linuxserver/prowlarr:latest
@@ -118,7 +118,7 @@ services:
 #       - PGID=${PGID} # default group id, defined in .env
 #       - TZ=${TZ} # timezone, defined in .env
 #     volumes:
-#       - ${DOWNLOADS}/downloads:/downloads # download folder
+#       - ${DATA}/usenet:/data/usenet # download folder
 #       - ./config/nzbget:/config # config files
 
   sonarr:
@@ -133,8 +133,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config # config files
-      - ${MEDIA}/:/videos # tv shows folder
-      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ${DATA}:/data # all media folder
+     # - ${MEDIA}/tv:/tv # tv shows folder
+     # - ${DOWNLOADS}/downloads:/downloads # download folder
 
   radarr:
     container_name: radarr
@@ -148,8 +149,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config # config files
-      - ${MEDIA}/:/videos # movies folder
-      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ${DATA}:/data # all media folder
+    #  - ${MEDIA}/:/videos # movies folder
+    #  - ${DOWNLOADS}/downloads:/downloads # download folder
   lidarr:
     container_name: lidarr
     image: lscr.io/linuxserver/lidarr:latest
@@ -162,8 +164,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/lidarr/config:/config
-      - ${MUSIC}/:/music
-      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ${DATA}:/data # all media folder
+    #  - ${MUSIC}/:/music
+    #  - ${DOWNLOADS}/downloads:/downloads # download folder
     # ports:
     #   - 8686:8686   
   bazarr:
@@ -179,8 +182,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config # config files
-      - ${MEDIA}/:/videos # all media folder
-      - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ${DATA}/media:/data/media # media folder
+ #     - ${MEDIA}/:/videos # all media folder
+ #     - ${DOWNLOADS}/downloads:/downloads # download folder
 #      - ${MEDIA}/Movies:/movies # movies folder
 #      - ${MEDIA}/TV_Shows:/tv # tv shows folder
     # ports:
@@ -199,6 +203,7 @@ services:
     # ports:
     #   - 5055:5055
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./config/jellyseer:/app/config
 #    healthcheck:
 #      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
@@ -228,6 +233,7 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
     # ports:
