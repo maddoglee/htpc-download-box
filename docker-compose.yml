@@ -33,43 +33,78 @@
   #   volumes:
   #     - ./config/protonvpn:/config
 services:
-  protonvpn:
-    container_name: protonvpn
-    image: ghcr.io/tprasadtp/protonwire:latest
-    init: true
-    restart: unless-stopped
-    environment:
-      PROTONVPN_SERVER: AU#312
-      DEBUG: "0"
-      KILL_SWITCH: "1"
+  # protonvpn:
+  #   container_name: protonvpn
+  #   image: ghcr.io/tprasadtp/protonwire:latest
+  #   init: true
+  #   restart: unless-stopped
+  #   environment:
+  #     PROTONVPN_SERVER: AU#312
+  #     DEBUG: "0"
+  #     KILL_SWITCH: "1"
+  #   cap_add:
+  #     - NET_ADMIN
+  #   sysctls:
+  #     net.ipv4.conf.all.rp_filter: 2
+  #     net.ipv6.conf.all.disable_ipv6: 1
+  #   volumes:
+  #     - type: tmpfs
+  #       target: /tmp
+  #     - type: bind
+  #       source: ./config/protonwire/private.key
+  #       target: /etc/protonwire/private-key
+  #       read_only: true
+  #   ports:
+  #     - "8000:80"  # Optional: ProtonWire status or debug UI
+  #   healthcheck:
+  #     test: curl -s https://api.ipify.org || exit 1
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 90s
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect.
+    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
     cap_add:
       - NET_ADMIN
-    sysctls:
-      net.ipv4.conf.all.rp_filter: 2
-      net.ipv6.conf.all.disable_ipv6: 1
-    volumes:
-      - type: tmpfs
-        target: /tmp
-      - type: bind
-        source: ./config/protonwire/private.key
-        target: /etc/protonwire/private-key
-        read_only: true
+    devices:
+      - /dev/net/tun:/dev/net/tun
     ports:
-      - "8000:80"  # Optional: ProtonWire status or debug UI
-    healthcheck:
-      test: curl -s https://api.ipify.org || exit 1
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 90s
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks          
+      - 8080:8080 # QbitTorrent UI
+      - 9696:9696 # Prowler UI
+      - 8973:8973 # QbitTorrent
+      - 8973:8973/udp # QbitTorrent
+    volumes:
+      - ./config/gluetun:/gluetun
+    environment:
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE} 
+      - SERVER_COUNTRIES=Australia
+      - PORT_FORWARD_ONLY=on
+   
 
+      # Wireguard:
+      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_ADDRESSES=10.64.222.21/32
+      # Timezone for accurate log times
+      - TZ=${TZ}
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
     restart: unless-stopped
-    network_mode: "service:protonvpn"
+    network_mode: "service:gluetun"
     depends_on:
-      protonvpn:
+      gluetun:
         condition: service_healthy
     environment:
       - PUID=${PUID}
@@ -84,9 +119,9 @@ services:
     image: linuxserver/prowlarr:latest
     container_name: prowlarr
     restart: unless-stopped
-    network_mode: "service:protonvpn"
+    network_mode: "service:gluetun"
     depends_on:
-      protonvpn:
+      gluetun:
         condition: service_healthy
     environment:
       - PUID=${PUID}
