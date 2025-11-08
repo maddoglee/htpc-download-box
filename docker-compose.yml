@@ -87,10 +87,15 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE} 
       - SERVER_COUNTRIES=Australia
-      - SERVER_CITIES=Sydney
-      - WIREGUARD_ADDRESSES=10.2.0.2/32
-      - PORT_FORWARD_ONLY=on
-      - HEALTH_VPN_DURATION_INITIAL=30s  # Wait 30s before first healthcheck
+      - SERVER_CITIES=Melbourne
+      - FREE_ONLY=off  # Set to 'on' if using free tier
+      - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      
+      # DNS fixes
+      - DOT=off
+      - DNS_ADDRESS=1.1.1.1
+      - HEALTH_VPN_DURATION_INITIAL=30s
       # Wireguard:
       # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
