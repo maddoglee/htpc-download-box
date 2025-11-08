@@ -72,14 +72,9 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8000:8000     # Gluetun control server
-      - 8888:8888/tcp # HTTP proxy
-      - 8388:8388/tcp # Shadowsocks
-      - 8388:8388/udp # Shadowsocks          
+      - 8000:8000     # Gluetun control server      
       - 8080:8080 # QbitTorrent UI
       - 9696:9696 # Prowler UI
-      - 8973:8973 # QbitTorrent
-      - 8973:8973/udp # QbitTorrent
     volumes:
       - ./config/gluetun:/gluetun
     environment:
@@ -88,7 +83,7 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE} 
       - SERVER_COUNTRIES=Australia
-      - SERVER_CITIES=Melbourne
+      - SERVER_CITIES=Sydney
       - FREE_ONLY=off  # Set to 'on' if using free tier
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
