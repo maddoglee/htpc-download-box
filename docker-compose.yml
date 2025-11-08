@@ -1,4 +1,4 @@
-services:
+#services:
 #   nordlynx:
 #     container_name: nordlynx
 #     image: ghcr.io/bubuntux/nordlynx
@@ -19,23 +19,43 @@ services:
 # #      - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
 #       - NET_LOCAL=192.168.1.0/24,10.6.0.2/32  # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
 #       - TZ=${TZ} # timezone, defined in .env
+  # protonvpn:
+  #   container_name: protonvpn
+  #   image: ghcr.io/tprasadtp/protonwire
+  #   hostname: protonvpn
+  #   restart: unless-stopped
+  #   privileged: true
+  #   ports:
+  #     - "8080:8080" # Port specified by instructions
+  #   environment:
+  #     - NET_LOCAL=192.168.1.0/24 # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
+  #     - TZ=${TZ} # timezone, defined in .env
+  #   volumes:
+  #     - ./config/protonvpn:/config
+services:
   protonvpn:
     container_name: protonvpn
-    image: ghcr.io/bubuntux/protorrent
-    hostname: protonvpn
+    image: ghcr.io/tprasadtp/protonwire:latest
+    init: true
     restart: unless-stopped
-    privileged: true
-    ports:
-      - "8080:8080" # Port specified by instructions
     environment:
-      - NET_LOCAL=192.168.1.0/24 # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
-      - TZ=${TZ} # timezone, defined in .env
-    volumes:
-      - ./config/protonvpn:/config
+      PROTONVPN_SERVER: "144.48.38.98"  # NL-FREE#100070
+      DEBUG: "0"
+      KILL_SWITCH: "1"
+    cap_add:
+      - NET_ADMIN
     sysctls:
-#      - net.ipv4.conf.all.src_valid_mark=1   # maybe
-#      - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
-      - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
+      net.ipv4.conf.all.rp_filter: 2
+      net.ipv6.conf.all.disable_ipv6: 1
+    volumes:
+      - type: tmpfs
+        target: /tmp
+      - type: bind
+        source: ./config/protonwire/private.key
+        target: /etc/protonwire/private-key
+        read_only: true
+    ports:
+      - "8000:80"  # Optional: ProtonWire status or debug UI
     healthcheck:
       test: curl -s https://api.ipify.org || exit 1
       interval: 30s
@@ -46,42 +66,35 @@ services:
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
-    environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
-      - WEBUI_PORT=8080         # When accessing the webui, check the docker logs for the randomly generated password.
-      #you also need a reverse proxy to access this if it is in the vpn! I'm using Caddy.
     restart: unless-stopped
     network_mode: "service:protonvpn"
-    #network_mode: "service:nordlynx"
     depends_on:
-      - protonvpn
-#      - nordlynx
+      protonvpn:
+        condition: service_healthy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
     volumes:
       - ./config/qbittorrent:/config
       - ${DATA}/torrents:/data/torrents
-      
-# The torrent service should be available at http://localhost:8080/ 
-# or anywhere inside of the local network http://192.168.1.xxx:8080
+
   prowlarr:
     image: linuxserver/prowlarr:latest
     container_name: prowlarr
     restart: unless-stopped
-    environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
     network_mode: "service:protonvpn"
-    #network_mode: "service:nordlynx"
     depends_on:
-      - protonvpn
-#      - nordlynx
+      protonvpn:
+        condition: service_healthy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
       - /etc/localtime:/etc/localtime:ro
-    #ports:
-    #  - 9696:9696                # Web UI port
 
 #   caddy:
 #     image: caddy:latest
