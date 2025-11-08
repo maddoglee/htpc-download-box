@@ -39,7 +39,7 @@ services:
     init: true
     restart: unless-stopped
     environment:
-      PROTONVPN_SERVER: "AU#312"  # AU#312
+      PROTONVPN_SERVER: "144.48.38.98"  # AU#312
       DEBUG: "0"
       KILL_SWITCH: "1"
     cap_add:
