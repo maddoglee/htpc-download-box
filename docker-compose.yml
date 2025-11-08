@@ -87,9 +87,9 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE} 
       - SERVER_COUNTRIES=Australia
+      - SERVER_CITIES=Sydney
+      - WIREGUARD_ADDRESSES=10.2.0.2/32
       - PORT_FORWARD_ONLY=on
-   
-
       # Wireguard:
       # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
@@ -97,7 +97,7 @@ services:
       - TZ=${TZ}
       # Server list updater
       # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
-      - UPDATER_PERIOD=
+      - UPDATER_PERIOD=48h
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
