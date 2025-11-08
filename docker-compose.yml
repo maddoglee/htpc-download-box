@@ -90,6 +90,7 @@ services:
       - SERVER_CITIES=Sydney
       - WIREGUARD_ADDRESSES=10.2.0.2/32
       - PORT_FORWARD_ONLY=on
+      - HEALTH_VPN_DURATION_INITIAL=30s  # Wait 30s before first healthcheck
       # Wireguard:
       # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
