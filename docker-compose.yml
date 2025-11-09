@@ -1,67 +1,4 @@
-#services:
-#   nordlynx:
-#     container_name: nordlynx
-#     image: ghcr.io/bubuntux/nordlynx
-#     hostname: nordlynx
-#     restart: unless-stopped
-#     security_opt:
-#       - no-new-privileges:true
-#     ports:
-#       - "8080:8080" # QbitTorrent UI
-#       - "9696:9696" # Prowler UI
-#       - "8973:8973" # QbitTorrent
-#       - "8973:8973/udp" # QbitTorrent
-#     cap_add:
-#       - NET_ADMIN                             # required
-#       - SYS_MODULE                            # maybe
-#     environment:
-#       - PRIVATE_KEY=${NORDLYNX_KEY}               # required - defined in .env
-# #      - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
-#       - NET_LOCAL=192.168.1.0/24,10.6.0.2/32  # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
-#       - TZ=${TZ} # timezone, defined in .env
-  # protonvpn:
-  #   container_name: protonvpn
-  #   image: ghcr.io/tprasadtp/protonwire
-  #   hostname: protonvpn
-  #   restart: unless-stopped
-  #   privileged: true
-  #   ports:
-  #     - "8080:8080" # Port specified by instructions
-  #   environment:
-  #     - NET_LOCAL=192.168.1.0/24 # So it can be accessed within the local network (10.6.0 is so i can acess it with the VPN Subnet)
-  #     - TZ=${TZ} # timezone, defined in .env
-  #   volumes:
-  #     - ./config/protonvpn:/config
 services:
-  # protonvpn:
-  #   container_name: protonvpn
-  #   image: ghcr.io/tprasadtp/protonwire:latest
-  #   init: true
-  #   restart: unless-stopped
-  #   environment:
-  #     PROTONVPN_SERVER: AU#312
-  #     DEBUG: "0"
-  #     KILL_SWITCH: "1"
-  #   cap_add:
-  #     - NET_ADMIN
-  #   sysctls:
-  #     net.ipv4.conf.all.rp_filter: 2
-  #     net.ipv6.conf.all.disable_ipv6: 1
-  #   volumes:
-  #     - type: tmpfs
-  #       target: /tmp
-  #     - type: bind
-  #       source: ./config/protonwire/private.key
-  #       target: /etc/protonwire/private-key
-  #       read_only: true
-  #   ports:
-  #     - "8000:80"  # Optional: ProtonWire status or debug UI
-  #   healthcheck:
-  #     test: curl -s https://api.ipify.org || exit 1
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 90s
   gluetun:
     image: qmcgaw/gluetun
     container_name: gluetun
@@ -70,9 +7,9 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8000:8000
-      - 8080:8080
-      - 9696:9696
+      - 8000:8000  # Control panel
+      - 8080:8080  # qBittorrent
+      - 9696:9696  # Prowlarr
     volumes:
       - ./config/gluetun:/gluetun
     environment:
@@ -83,8 +20,10 @@ services:
       - SERVER_CITIES=Sydney
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - HEALTH_TARGET_ADDRESS=1.1.1.1:443  # Fix healthcheck
       - TZ=${TZ}
     restart: unless-stopped
+
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
@@ -116,58 +55,6 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
-      - /etc/localtime:/etc/localtime:ro
-
-#   caddy:
-#     image: caddy:latest
-#     container_name: caddy
-#     restart: unless-stopped
-#     ports:
-#       - "8080:8080"
-#       - "9696:9696"
-#       - "6789:6789"
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
-#       - ./config/caddy/data:/data
-#       - ./config/caddy/config:/config
-#     networks:
-#       - media_net
-#     depends_on:
-# #      - nordvpn
-#       - nordlynx
-
-  # jackett:
-  #   container_name: jackett
-  #   image: linuxserver/jackett:latest
-  #   restart: unless-stopped
-  #   network_mode: host
-  #   environment:
-  #     - PUID=${PUID} # default user id, defined in .env
-  #     - PGID=${PGID} # default group id, defined in .env
-  #     - TZ=${TZ} # timezone, defined in .env
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - ${DOWNLOADS}/torrent-blackhole:/downloads # place where to put .torrent files for manual download
-  #     - ./config/jackett:/config # config files
-
-#   nzbget:
-#     container_name: nzbget
-#     image: linuxserver/nzbget:latest
-#     restart: unless-stopped
-#         #network_mode: "service:nordvpn"
-#     network_mode: "service:nordlynx"
-#     depends_on:
-# #      - nordvpn
-#       - nordlynx
-#     environment:
-#       - PUID=${PUID} # default user id, defined in .env
-#       - PGID=${PGID} # default group id, defined in .env
-#       - TZ=${TZ} # timezone, defined in .env
-#     volumes:
-#       - ${DATA}/usenet:/data/usenet # download folder
-#       - ./config/nzbget:/config # config files
 
   sonarr:
     container_name: sonarr
@@ -175,15 +62,12 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/sonarr:/config # config files
-      - ${DATA}:/data # all media folder
-     # - ${MEDIA}/tv:/tv # tv shows folder
-     # - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ./config/sonarr:/config
+      - ${DATA}:/data
 
   radarr:
     container_name: radarr
@@ -191,52 +75,40 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/radarr:/config # config files
-      - ${DATA}:/data # all media folder
-    #  - ${MEDIA}/:/videos # movies folder
-    #  - ${DOWNLOADS}/downloads:/downloads # download folder
+      - ./config/radarr:/config
+      - ${DATA}:/data
+
   lidarr:
     container_name: lidarr
     image: lscr.io/linuxserver/lidarr:latest
     restart: unless-stopped
     network_mode: host
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/lidarr/config:/config
-      - ${DATA}:/data # all media folder
-    #  - ${MUSIC}/:/music
-    #  - ${DOWNLOADS}/downloads:/downloads # download folder
-    # ports:
-    #   - 8686:8686   
+      - ./config/lidarr:/config
+      - ${DATA}:/data
+
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
     restart: unless-stopped
     network_mode: host
     environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
-      - UMASK_SET=022 #optional
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/bazarr:/config # config files
-      - ${DATA}/media:/data/media # media folder
- #     - ${MEDIA}/:/videos # all media folder
- #     - ${DOWNLOADS}/downloads:/downloads # download folder
-#      - ${MEDIA}/Movies:/movies # movies folder
-#      - ${MEDIA}/TV_Shows:/tv # tv shows folder
-    # ports:
-    #   - 6767:6767
+      - ./config/bazarr:/config
+      - ${DATA}/media:/data/media
+
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
@@ -244,24 +116,15 @@ services:
     network_mode: host
     environment:
       - LOG_LEVEL=debug
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
-      - PORT=5055 #optional
-    # ports:
-    #   - 5055:5055
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=5055
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/jellyseer:/app/config
-#    healthcheck:
-#      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-#      start_period: 20s
-#      timeout: 3s
-#      interval: 15s
-#      retries: 3
+
   flaresolverr:
     container_name: flaresolverr
-    # DockerHub mirror flaresolverr/flaresolverr:latest
     image: ghcr.io/flaresolverr/flaresolverr:latest
     restart: unless-stopped
     network_mode: host
@@ -269,11 +132,9 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - LOG_HTML=${LOG_HTML:-false}
       - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
-    # ports:
-    #   - "${PORT:-8191}:8191"
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
 
   portainer:
     container_name: portainer
@@ -281,11 +142,5 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
-    # ports:
-    #   - "9000:9000"
-
-# Use host for Sonarr, Radarr, Bazarr, NZBGet — they benefit from LAN access.
-# Use media_net for Caddy, Prowlarr, qBittorrent — they need internal DNS and reverse proxying.
