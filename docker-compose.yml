@@ -87,11 +87,10 @@ services:
       - FREE_ONLY=off  # Set to 'on' if using free tier
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      
-      # DNS fixes
-      - DOT=off
-      - DNS_ADDRESS=1.1.1.1
-      - HEALTH_VPN_DURATION_INITIAL=60s
+    # Use these instead:
+      - DNS_SERVER=127.0.0.1  # Use internal DNS
+      - HEALTH_TARGET_ADDRESS=1.1.1.1:443  # Direct IP instead of cloudflare.com
+      - HEALTH_SUCCESS_WAIT_DURATION=15s  # Give it more time
       # Wireguard:
       # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
