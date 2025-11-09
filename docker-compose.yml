@@ -65,39 +65,26 @@ services:
   gluetun:
     image: qmcgaw/gluetun
     container_name: gluetun
-    # line above must be uncommented to allow external containers to connect.
-    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8000:8000     # Gluetun control server      
-      - 8080:8080 # QbitTorrent UI
-      - 9696:9696 # Prowler UI
+      - 8000:8000
+      - 8080:8080
+      - 9696:9696
     volumes:
       - ./config/gluetun:/gluetun
     environment:
-      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE} 
+      - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE}
       - SERVER_COUNTRIES=Australia
       - SERVER_CITIES=Sydney
-      - FREE_ONLY=off  # Set to 'on' if using free tier
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - DNS_ADDRESS=191.168.1.23
-      - HEALTH_TARGET_ADDRESS=1.1.1.1:443  # Direct IP instead of cloudflare.com
-      - HEALTH_SUCCESS_WAIT_DURATION=15s  # Give it more time
-      # Wireguard:
-      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
-      # - WIREGUARD_ADDRESSES=10.64.222.21/32
-      # Timezone for accurate log times
       - TZ=${TZ}
-      # Server list updater
-      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
-      - UPDATER_PERIOD=48h
+    restart: unless-stopped
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
