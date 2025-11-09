@@ -114,6 +114,7 @@ services:
       - TZ=${TZ}
       - WEBUI_PORT=8080
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./config/qbittorrent:/config
       - ${DATA}/torrents:/data/torrents
 
