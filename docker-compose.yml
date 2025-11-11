@@ -57,6 +57,7 @@ services:
         sleep 60
       done
       '
+
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
