@@ -33,30 +33,12 @@ services:
   gluetun-watchdog:
     image: alpine
     container_name: gluetun-watchdog
-    depends_on:
-      - gluetun
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    entrypoint: |
-      sh -c '
-      retries=0
-      max_retries=5
-      while true; do
-        status=$(docker inspect -f "{{.State.Health.Status}}" gluetun)
-        if [ "$status" = "unhealthy" ]; then
-          if [ "$retries" -lt "$max_retries" ]; then
-            echo "Glutetun unhealthy. Restarting... ($((retries+1))/$max_retries)"
-            docker restart gluetun
-            retries=$((retries+1))
-          else
-            echo "Max retries ($max_retries) reached. No further restarts."
-          fi
-        else
-          retries=0
-        fi
-        sleep 60
-      done
-      '
+      - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
+    entrypoint: sh /gluetun_watchdog.sh
+    depends_on:
+      - gluetun
 
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
