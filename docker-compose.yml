@@ -58,7 +58,7 @@ services:
     volumes:
       - ./config/qbittorrent:/config
       - ${DATA}/torrents:/data/torrents
-      - /home/lee/torrents/:/trackerfiles
+      - /home/lee/trackerfiles/:/trackerfiles
 
   prowlarr:
     image: linuxserver/prowlarr:latest
