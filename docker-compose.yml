@@ -45,7 +45,7 @@ services:
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
-    restart: unless-stopped
+    restart: always
     network_mode: "service:gluetun"
     depends_on:
       gluetun:
@@ -63,7 +63,7 @@ services:
   prowlarr:
     image: linuxserver/prowlarr:latest
     container_name: prowlarr
-    restart: unless-stopped
+    restart: always
     network_mode: "service:gluetun"
     depends_on:
       gluetun:
