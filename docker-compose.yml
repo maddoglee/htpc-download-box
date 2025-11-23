@@ -20,7 +20,9 @@ services:
       - SERVER_CITIES=Sydney
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - HEALTH_TARGET_ADDRESS=1.1.1.1:443  # Fix healthcheck
+      - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
+      - FIREWALL=on
+      - VPN_DISABLE_IPV6=true
       - TZ=${TZ}
     restart: unless-stopped
     healthcheck:
@@ -56,6 +58,7 @@ services:
     volumes:
       - ./config/qbittorrent:/config
       - ${DATA}/torrents:/data/torrents
+      - /home/lee/torrents/:/trackerfiles
 
   prowlarr:
     image: linuxserver/prowlarr:latest
