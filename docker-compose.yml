@@ -20,7 +20,7 @@ services:
       - SERVER_CITIES=Sydney
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
+      - HEALTH_TARGET_ADDRESS=google.com:443
       - FIREWALL=on
       - VPN_DISABLE_IPV6=true
       - TZ=${TZ}
@@ -31,16 +31,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
-
-  gluetun-watchdog:
-    image: alpine
-    container_name: gluetun-watchdog
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
-    entrypoint: sh /gluetun_watchdog.sh
-    depends_on:
-      - gluetun
+    networks:
+      - media-network
 
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
@@ -80,7 +72,8 @@ services:
     container_name: sonarr
     image: linuxserver/sonarr:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 8989:8989
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -88,12 +81,15 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ${DATA}:/data
+    networks:
+      - media-network
 
   radarr:
     container_name: radarr
     image: linuxserver/radarr:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 7878:7878
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -101,12 +97,15 @@ services:
     volumes:
       - ./config/radarr:/config
       - ${DATA}:/data
+    networks:
+      - media-network
 
   lidarr:
     container_name: lidarr
     image: lscr.io/linuxserver/lidarr:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 8686:8686
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -114,12 +113,15 @@ services:
     volumes:
       - ./config/lidarr:/config
       - ${DATA}:/data
+    networks:
+      - media-network
 
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 6767:6767
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -128,12 +130,15 @@ services:
     volumes:
       - ./config/bazarr:/config
       - ${DATA}/media:/data/media
+    networks:
+      - media-network
 
   jellyseerr:
     container_name: jellyseerr
     image: fallenbagel/jellyseerr:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 5055:5055
     environment:
       - LOG_LEVEL=debug
       - PUID=${PUID}
@@ -142,6 +147,8 @@ services:
       - PORT=5055
     volumes:
       - ./config/jellyseer:/app/config
+    networks:
+      - media-network
 
   flaresolverr:
     container_name: flaresolverr
@@ -160,8 +167,28 @@ services:
     container_name: portainer
     image: portainer/portainer-ce:latest
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 9000:9000
+      - 8001:8001
     command: -H unix:///var/run/docker.sock --tunnel-port 8001
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
+    networks:
+      - media-network
+
+  gluetun-watchdog:
+    image: alpine
+    container_name: gluetun-watchdog
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
+    entrypoint: sh /gluetun_watchdog.sh
+    depends_on:
+      - gluetun
+    networks:
+      - media-network
+
+networks:
+  media-network:
+    driver: bridge
