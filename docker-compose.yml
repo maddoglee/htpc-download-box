@@ -81,6 +81,7 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ${DATA}:/data
+      - /home/lee/torrents:/torrents
     networks:
       - media-network
 
@@ -97,6 +98,7 @@ services:
     volumes:
       - ./config/radarr:/config
       - ${DATA}:/data
+      - /home/lee/torrents:/torrents
     networks:
       - media-network
 
@@ -113,6 +115,7 @@ services:
     volumes:
       - ./config/lidarr:/config
       - ${DATA}:/data
+      - /home/lee/torrents:/torrents
     networks:
       - media-network
 
@@ -130,6 +133,7 @@ services:
     volumes:
       - ./config/bazarr:/config
       - ${DATA}/media:/data/media
+      - /home/lee/torrents:/torrents
     networks:
       - media-network
 
@@ -147,6 +151,7 @@ services:
       - PORT=5055
     volumes:
       - ./config/jellyseer:/app/config
+      - /home/lee/torrents:/torrents
     networks:
       - media-network
 
