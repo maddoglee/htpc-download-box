@@ -10,6 +10,7 @@ services:
       - 8000:8000  # Control panel
       - 8080:8080  # qBittorrent
       - 9696:9696  # Prowlarr
+      - 8191:8191 # flaresolverr
     volumes:
       - ./config/gluetun:/gluetun
     environment:
@@ -41,7 +42,8 @@ services:
       - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
     entrypoint: sh /gluetun_watchdog.sh
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
   qbittorrent:
     image: linuxserver/qbittorrent:arm64v8-latest
@@ -105,19 +107,19 @@ services:
       - ${DATA}:/data
       - /home/lee/torrents:/torrents
 
-  lidarr:
-    container_name: lidarr
-    image: lscr.io/linuxserver/lidarr:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/lidarr:/config
-      - ${DATA}:/data
-      - /home/lee/torrents:/torrents
+  # lidarr:
+  #   container_name: lidarr
+  #   image: lscr.io/linuxserver/lidarr:latest
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #   volumes:
+  #     - ./config/lidarr:/config
+  #     - ${DATA}:/data
+  #     - /home/lee/torrents:/torrents
 
   bazarr:
     container_name: bazarr
@@ -152,6 +154,9 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     restart: unless-stopped
     network_mode: "service:gluetun"
+    depends_on:
+      prowlarr:
+        condition: service_healthy
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - LOG_HTML=${LOG_HTML:-false}
