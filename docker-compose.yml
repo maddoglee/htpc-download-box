@@ -78,12 +78,6 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
-    healthcheck:
-      test: curl --fail http://localhost:9696 || exit 1
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
 
   sonarr:
     container_name: sonarr
@@ -161,7 +155,7 @@ services:
     restart: unless-stopped
     network_mode: "service:gluetun"
     depends_on:
-      prowlarr:
+      gluetun:
         condition: service_healthy
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-info}
