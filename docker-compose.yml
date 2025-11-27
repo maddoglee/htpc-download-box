@@ -165,12 +165,12 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
 
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce:latest
-    restart: unless-stopped
-    network_mode: host
-    command: -H unix:///var/run/docker.sock --tunnel-port 8001
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./config/portainer:/data
+  # portainer:
+  #   container_name: portainer
+  #   image: portainer/portainer-ce:latest
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   command: -H unix:///var/run/docker.sock --tunnel-port 8001
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./config/portainer:/data
