@@ -96,7 +96,7 @@ services:
     environment:
       - TZ=${TZ}
     volumes:
-      - ./config/autobrr/config:/config
+      - ./config/autobrr:/config
   sonarr:
     container_name: sonarr
     image: linuxserver/sonarr:latest
