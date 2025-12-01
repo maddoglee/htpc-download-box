@@ -94,8 +94,6 @@ services:
     #    max-size: ${DOCKERLOGGING_MAXSIZE}
     user: 1000:1000
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
       - TZ=${TZ}
     volumes:
       - ./config/autobrr/config:/config
