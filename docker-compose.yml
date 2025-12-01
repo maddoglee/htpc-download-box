@@ -11,6 +11,7 @@ services:
       - 8080:8080  # qBittorrent
       - 9696:9696  # Prowlarr
       - 8191:8191 # flaresolverr
+      - 7474:7474 # autobrr
     volumes:
       - ./config/gluetun:/gluetun
     environment:
@@ -78,7 +79,26 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
-
+  autobrr:
+    container_name: autobrr
+    image: ghcr.io/autobrr/autobrr:latest
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #logging:
+    #  driver: json-file
+    #  options:
+    #    max-file: ${DOCKERLOGGING_MAXFILE}
+    #    max-size: ${DOCKERLOGGING_MAXSIZE}
+    user: 1000:1000
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/autobrr/config:/config
   sonarr:
     container_name: sonarr
     image: linuxserver/sonarr:latest
@@ -92,7 +112,7 @@ services:
       - ./config/sonarr:/config
       - ${DATA}:/data
       - /home/lee/torrents:/torrents
-
+      
   radarr:
     container_name: radarr
     image: linuxserver/radarr:latest
