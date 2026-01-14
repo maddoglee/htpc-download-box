@@ -12,6 +12,9 @@ services:
       - 9696:9696  # Prowlarr
       - 8191:8191 # flaresolverr
       - 7474:7474 # autobrr
+    dns:
+      - 192.168.1.20 # Your AdGuard IP 
+      - 1.1.1.1 # Fallback to Cloudflare
     volumes:
       - ./config/gluetun:/gluetun
     environment:
@@ -125,7 +128,7 @@ services:
       - ${DATA}:/data
       - /home/lee/torrents:/torrents
 
-  # lidarr:
+  # lidarr:n
   #   container_name: lidarr
   #   image: lscr.io/linuxserver/lidarr:latest
   #   restart: unless-stopped
@@ -182,7 +185,17 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:6
+    container_name: cross-seed
+    user: 1000:1000 # this must match your torrent client (cross-seed does not support using PGID and PUID)
+    ports:
+      - "2468:2468"
+    volumes:
+      - /path/to/config/folder:/config
+      - # You will need at least one extra volume for your media drive if using https://www.cross-seed.org/docs/tutorials/linking
+    command: daemon
+    restart: unless-stopped
   # portainer:
   #   container_name: portainer
   #   image: portainer/portainer-ce:latest
