@@ -206,7 +206,7 @@ services:
 
   # Optional - only needed for CF/QP testing
   parser:
-    image: santiagosayshey/profilarr-parser:latest
+    image: ghcr.io/dictionarry-hub/profilarr-parser:sha256-24fa2a0a1ea62ab66d7df5d634e459b54e43cbf202450e9e20c791c87cfe2b5b
     container_name: profilarr-parser
     expose:
       - "5025"
