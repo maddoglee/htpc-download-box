@@ -187,6 +187,30 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+  profilarr:
+    image: ghcr.io/dictionarry-hub/profilarr:latest
+    container_name: profilarr
+    ports:
+      - "6868:6868"
+    volumes:
+      - ./config:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PARSER_HOST=parser
+      - PARSER_PORT=5025
+    depends_on:
+      parser:
+        condition: service_healthy
+
+  # Optional - only needed for CF/QP testing
+  parser:
+    image: ghcr.io/dictionarry-hub/profilarr-parser:latest
+    container_name: profilarr-parser
+    expose:
+      - "5025"
+      
 #  cross-seed:
 #    image: ghcr.io/cross-seed/cross-seed:6
 #    container_name: cross-seed
