@@ -188,7 +188,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
   profilarr:
-    image: ghcr.io/dictionarry-hub/profilarr:latest
+    image: santiagosayshey/profilarr:latest
     container_name: profilarr
     ports:
       - "6868:6868"
@@ -206,11 +206,11 @@ services:
 
   # Optional - only needed for CF/QP testing
   parser:
-    image: ghcr.io/dictionarry-hub/profilarr-parser:latest
+    image: santiagosayshey/profilarr-parser:latest
     container_name: profilarr-parser
     expose:
       - "5025"
-      
+
 #  cross-seed:
 #    image: ghcr.io/cross-seed/cross-seed:6
 #    container_name: cross-seed
