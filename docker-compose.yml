@@ -199,6 +199,22 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     restart: unless-stopped
+  sportarr:
+    image: sportarr/sportarr:latest
+    container_name: sportarr
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK=022
+    volumes:
+      - ./config/sportarr/config:/config
+      - ${DATA}:/data
+#    ports:
+#      - 1867:1867
+    
 
 
 #  cross-seed:
