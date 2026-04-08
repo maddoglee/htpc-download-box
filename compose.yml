@@ -54,7 +54,7 @@ services:
         condition: service_healthy
 
   qbittorrent:
-    image: linuxserver/qbittorrent:arm64v8-latest
+    image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
     restart: always
     network_mode: "service:gluetun"
