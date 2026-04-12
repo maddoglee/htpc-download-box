@@ -16,7 +16,7 @@ services:
       - 9.9.9.9 # Quad9
     #  - 192.168.1.21 # Your AdGuard IP 
       - 1.1.1.1 # Fallback to Cloudflare
-    sysctls: 
+    sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     volumes:
       - ./config/gluetun:/gluetun
@@ -117,7 +117,6 @@ services:
       - ./config/sonarr:/config
       - ${DATA}:/data
       - /home/lee/torrents:/torrents
-      
   radarr:
     container_name: radarr
     image: linuxserver/radarr:latest
@@ -202,7 +201,7 @@ services:
     ports:
       - "6868:6868"
     volumes:
-      - ./config:/config
+      - ./config/profilarr:/config
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -223,7 +222,6 @@ services:
 #       - ${DATA}:/data
 # #    ports:
 # #      - 1867:1867
-    
 
 
 #  cross-seed:
