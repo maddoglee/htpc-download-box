@@ -29,35 +29,31 @@ services:
       - SERVER_CITIES=Sydney
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      #- HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
-      #- HEALTH_TARGET_ADDRESSES=google.com:443
-      #- HEALTH_VPN_DURATION_INITIAL=30s
-      #- HEALTH_VPN_DURATION_ADDITION=30s
-      #- HEALTHCHECK_TYPE=tcp
-      - HEALTHCHECK_VPN=off
+      - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
+      - HEALTHCHECK_VPN=on
       - FIREWALL=on
       - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
       #- FIREWALL_VPN_INPUT_PORTS=39805
       - VPN_DISABLE_IPV6=true
       - TZ=${TZ}
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD", "sh", "-c", "curl -s http://localhost:8000/v1/openvpn/portforwarded | grep -q '\"port\":0' && exit 1 || exit 0"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 3
-    #  start_period: 20s
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -s http://localhost:8000/v1/openvpn/portforwarded | grep -q '\"port\":0' && exit 1 || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
-  gluetun-watchdog:
-    image: alpine
-    container_name: gluetun-watchdog
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
-    entrypoint: sh /gluetun_watchdog.sh
-    depends_on:
-      gluetun:
-        condition: service_healthy
+  #gluetun-watchdog:
+  #  image: alpine
+  #  container_name: gluetun-watchdog
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #    - ./gluetun_watchdog.sh:/gluetun_watchdog.sh
+  #  entrypoint: sh /gluetun_watchdog.sh
+  #  depends_on:
+  #    gluetun:
+  #      condition: service_healthy
 
   qbittorrent:
     image: linuxserver/qbittorrent:latest
