@@ -26,7 +26,8 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${PROTONPRIVATE}
       - SERVER_COUNTRIES=Australia
-      - SERVER_CITIES=Sydney
+    #  - SERVER_CITIES=Sydney
+      - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
     #  - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
