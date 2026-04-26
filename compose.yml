@@ -68,9 +68,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ./config/qbittorrent:/config
-      - ${DATA}/torrents:/data/torrents
-      - /home/lee/trackerfiles/:/trackerfiles
-      - /home/lee/torrents:/torrents
+      - ${LOCAL_DATA}/torrents:/torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
 
   prowlarr:
     image: linuxserver/prowlarr:latest
@@ -86,6 +84,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
+  
   autobrr:
     container_name: autobrr
     image: ghcr.io/autobrr/autobrr:latest
@@ -104,6 +103,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/autobrr:/config
+  
   sonarr:
     container_name: sonarr
     image: linuxserver/sonarr:latest
@@ -116,7 +116,8 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ${DATA}:/data
-      - /home/lee/torrents:/torrents
+      - ${LOCAL_DATA}/torrents:/torrents
+  
   radarr:
     container_name: radarr
     image: linuxserver/radarr:latest
@@ -129,7 +130,7 @@ services:
     volumes:
       - ./config/radarr:/config
       - ${DATA}:/data
-      - /home/lee/torrents:/torrents
+      - ${LOCAL_DATA}/torrents:/torrents
 
   # lidarr:n
   #   container_name: lidarr
@@ -143,7 +144,7 @@ services:
   #   volumes:
   #     - ./config/lidarr:/config
   #     - ${DATA}:/data
-  #     - /home/lee/torrents:/torrents
+  #     - ${LOCAL_DATA/torrents:/torrents
 
   bazarr:
     container_name: bazarr
@@ -195,6 +196,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+  
   profilarr:
     image: santiagosayshey/profilarr:latest
     container_name: profilarr
