@@ -29,8 +29,12 @@ services:
       - SERVER_CITIES=Sydney
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
-      - FIREWALL=off
+      #- HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
+      - HEALTH_TARGET_ADDRESSES=google.com:443
+      - HEALTH_VPN_DURATION_INITIAL=30s
+      - HEALTH_VPN_DURATION_ADDITION=30s
+      - HEALTHCHECK_TYPE=tcp
+      - FIREWALL=on
       - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
       #- FIREWALL_VPN_INPUT_PORTS=39805
       - VPN_DISABLE_IPV6=true
