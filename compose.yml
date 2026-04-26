@@ -33,8 +33,8 @@ services:
     #  - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
     #  - HEALTHCHECK_VPN=on
       - FIREWALL=off
-      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
-      - FIREWALL_INPUT_PORTS=56789
+     # - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
+    #  - FIREWALL_INPUT_PORTS=56789
       - VPN_DISABLE_IPV6=true
       - TZ=${TZ}
     restart: unless-stopped
