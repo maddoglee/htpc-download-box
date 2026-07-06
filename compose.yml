@@ -228,18 +228,18 @@ services:
 volumes:
   dispatcharr_data:
 
-  # profilarr:
-  #   image: santiagosayshey/profilarr:latest
-  #   container_name: profilarr
-  #   ports:
-  #     - "6868:6868"
-  #   volumes:
-  #     - ./config/profilarr:/config
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #   restart: unless-stopped
+  profilarr:
+    image: santiagosayshey/profilarr:latest
+    container_name: profilarr
+    ports:
+      - "6868:6868"
+    volumes:
+      - ./config/profilarr:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    restart: unless-stopped
 
 #   sportarr:
 #     image: sportarr/sportarr:latest
