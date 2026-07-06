@@ -135,7 +135,7 @@ services:
       - ${DATA}:/data
       - ${LOCAL_DATA}/torrents:/torrents
 
-  # lidarr:n
+  # lidarr:
   #   container_name: lidarr
   #   image: lscr.io/linuxserver/lidarr:latest
   #   restart: unless-stopped
@@ -200,18 +200,47 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
   
-  profilarr:
-    image: santiagosayshey/profilarr:latest
-    container_name: profilarr
-    ports:
-      - "6868:6868"
-    volumes:
-      - ./config/profilarr:/config
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
+    container_name: dispatcharr
+    ports:
+      - 9191:9191
+    volumes:
+      - ./config/dispatcharr:/data
+    environment:
+      - DISPATCHARR_ENV=aio
+      - REDIS_HOST=localhost
+      - CELERY_BROKER_URL=redis://localhost:6379/0
+      - DISPATCHARR_LOG_LEVEL=info
+    # Optional for hardware acceleration
+    #devices:
+    #  - /dev/dri:/dev/dri  # For Intel/AMD GPU acceleration (VA-API)
+    # Uncomment the following lines for NVIDIA GPU support
+    # NVidia GPU support (requires NVIDIA Container Toolkit)
+    #deploy:
+    #  resources:
+    #      reservations:
+    #          devices:
+    #              - driver: nvidia
+    #                count: all
+    #                capabilities: [gpu]
+volumes:
+  dispatcharr_data:
+
+  # profilarr:
+  #   image: santiagosayshey/profilarr:latest
+  #   container_name: profilarr
+  #   ports:
+  #     - "6868:6868"
+  #   volumes:
+  #     - ./config/profilarr:/config
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #   restart: unless-stopped
+
 #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
