@@ -200,6 +200,19 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
   
+  profilarr:
+    image: santiagosayshey/profilarr:latest
+    container_name: profilarr
+    ports:
+      - "6868:6868"
+    volumes:
+      - ./config/profilarr:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    restart: unless-stopped
+
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
@@ -225,22 +238,6 @@ services:
     #              - driver: nvidia
     #                count: all
     #                capabilities: [gpu]
-volumes:
-  dispatcharr_data:
-
-  profilarr:
-    image: santiagosayshey/profilarr:latest
-    container_name: profilarr
-    ports:
-      - "6868:6868"
-    volumes:
-      - ./config/profilarr:/config
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    restart: unless-stopped
-
 #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
@@ -278,3 +275,7 @@ volumes:
   #   volumes:
   #     - /var/run/docker.sock:/var/run/docker.sock
   #     - ./config/portainer:/data
+
+
+volumes:
+  dispatcharr_data:
