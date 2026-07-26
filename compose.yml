@@ -199,22 +199,8 @@ services:
       - TZ=${TZ}
     restart: unless-stopped
 
-  lidarr:
-    container_name: lidarr
-    image: lscr.io/linuxserver/lidarr:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/lidarr:/config
-      - ${DATA}:/data
-      - ${LOCAL_DATA}/torrents:/torrents  # Fixed missing }
-
   droppedneedle:
-    image: ghcr.io/habirabbu/droppedneedle:latest
+    image: droppedneedle/droppedneedle:latest
     container_name: droppedneedle
     environment:
       - PUID=${PUID}
@@ -225,14 +211,14 @@ services:
     ports:
       - "8688:8688"
     volumes:
-      - ./config/droppedneedle:/app/config  # Isolated config directory
-      - ./cache/droppedneedle:/app/cache    # Isolated cache directory
-      - ${DATA}/media/music:/music:rw
-      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw
+      - ./config/droppedneedle:/app/config
+      - ./cache/droppedneedle:/app/cache
+      - ${DATA}/media/music:/data:rw                # Maps to /mnt/storage/data/media/music
+      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
   slskd:
-    image: slskd/slskd
+    image: slskd/slskd:0.25.1
     container_name: slskd
     ports:
       - "5030:5030"
@@ -245,9 +231,8 @@ services:
       - SLSKD_REMOTE_CONFIGURATION=true
     volumes:
       - ./config/slskd:/app
-      - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Added so slskd writes where droppedneedle is looking
+      - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
     restart: unless-stopped
-
 
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
