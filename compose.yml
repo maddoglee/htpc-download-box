@@ -199,7 +199,7 @@ services:
       - TZ=${TZ}
     restart: unless-stopped
 
-lidarr:
+  lidarr:
     container_name: lidarr
     image: lscr.io/linuxserver/lidarr:latest
     restart: unless-stopped
@@ -213,7 +213,7 @@ lidarr:
       - ${DATA}:/data
       - ${LOCAL_DATA}/torrents:/torrents  # Fixed missing }
 
-droppedneedle:
+  droppedneedle:
     image: ghcr.io/habirabbu/droppedneedle:latest
     container_name: droppedneedle
     environment:
@@ -231,7 +231,7 @@ droppedneedle:
       - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw
     restart: unless-stopped
 
-slskd:
+  slskd:
     image: slskd/slskd
     container_name: slskd
     ports:
@@ -249,7 +249,7 @@ slskd:
     restart: unless-stopped
 
 
-dispatcharr:
+  dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
     container_name: dispatcharr
