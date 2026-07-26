@@ -12,6 +12,9 @@ services:
       - 9696:9696  # Prowlarr
       - 8191:8191 # flaresolverr
       - 7474:7474 # autobrr
+      - "5030:5030"  # Slskd Web UI
+      - "5031:5031"  # slskd Port 5031
+      - "50300:50300" # slskd Listening Port
     dns:
       - 9.9.9.9 # Quad9
     #  - 192.168.1.21 # Your AdGuard IP 
@@ -225,10 +228,6 @@ services:
     depends_on:
       gluetun:
         condition: service_healthy
-    ports:
-      - "5030:5030"
-      - "5031:5031"
-      - "50300:50300"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -237,7 +236,7 @@ services:
       # Crucial: This environment variable sets your slskd API key
       - SLSKD_HTTP_OPTIONS__API_KEY=${SLSKD_API_KEY}
       - SLSKD_SLSK_USERNAME=${SLSK_USERNAME}
-      - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}J48VzmgMTnS3nPFQofb4Dw
+      - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
       - ./config/slskd:/app
       - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
