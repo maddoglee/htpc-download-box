@@ -240,6 +240,7 @@ services:
     volumes:
       - ./config/slskd:/app
       - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
+      - ${DATA}/media/music:/data/music:ro
     
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
