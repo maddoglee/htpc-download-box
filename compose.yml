@@ -135,20 +135,6 @@ services:
       - ${DATA}:/data
       - ${LOCAL_DATA}/torrents:/torrents
 
-  # lidarr:
-  #   container_name: lidarr
-  #   image: lscr.io/linuxserver/lidarr:latest
-  #   restart: unless-stopped
-  #   network_mode: host
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #   volumes:
-  #     - ./config/lidarr:/config
-  #     - ${DATA}:/data
-  #     - ${LOCAL_DATA/torrents:/torrents
-
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
@@ -213,7 +199,57 @@ services:
       - TZ=${TZ}
     restart: unless-stopped
 
-  dispatcharr:
+lidarr:
+    container_name: lidarr
+    image: lscr.io/linuxserver/lidarr:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/lidarr:/config
+      - ${DATA}:/data
+      - ${LOCAL_DATA}/torrents:/torrents  # Fixed missing }
+
+droppedneedle:
+    image: ghcr.io/habirabbu/droppedneedle:latest
+    container_name: droppedneedle
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=8688
+      - SLSKD_DOWNLOADS_PATH=/slskd-downloads
+    ports:
+      - "8688:8688"
+    volumes:
+      - ./config/droppedneedle:/app/config  # Isolated config directory
+      - ./cache/droppedneedle:/app/cache    # Isolated cache directory
+      - ${DATA}/media/music:/music:rw
+      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw
+    restart: unless-stopped
+
+slskd:
+    image: slskd/slskd
+    container_name: slskd
+    ports:
+      - "5030:5030"
+      - "5031:5031"
+      - "50300:50300"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SLSKD_REMOTE_CONFIGURATION=true
+    volumes:
+      - ./config/slskd:/app
+      - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Added so slskd writes where droppedneedle is looking
+    restart: unless-stopped
+
+
+dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
     container_name: dispatcharr
