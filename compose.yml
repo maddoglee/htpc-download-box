@@ -220,6 +220,11 @@ services:
   slskd:
     image: slskd/slskd:0.25.1
     container_name: slskd
+    restart: always
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     ports:
       - "5030:5030"
       - "5031:5031"
@@ -229,11 +234,14 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - SLSKD_REMOTE_CONFIGURATION=true
+      # Crucial: This environment variable sets your slskd API key
+      - SLSKD_HTTP_OPTIONS__API_KEY=${SLSKD_API_KEY}
+      - SLSKD_SLSK_USERNAME=${SLSK_USERNAME}
+      - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}J48VzmgMTnS3nPFQofb4Dw
     volumes:
       - ./config/slskd:/app
       - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
-    restart: unless-stopped
-
+    
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
