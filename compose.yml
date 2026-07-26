@@ -213,7 +213,7 @@ services:
     volumes:
       - ./config/droppedneedle:/app/config
       - ./cache/droppedneedle:/app/cache
-      - ${DATA}/media/music:/data:rw                # Maps to /mnt/storage/data/media/music
+      - ${DATA}/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
       - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
