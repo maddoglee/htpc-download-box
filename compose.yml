@@ -16,6 +16,7 @@ services:
       - 5031:5031  # slskd Port 5031
       - 50300:50300 # slskd Listening Port
       - 9191:9191 # dispatcharr
+      - 34400:34400 # threadfin
     dns:
       - 9.9.9.9 # Quad9
     #  - 192.168.1.21 # Your AdGuard IP 
@@ -281,6 +282,25 @@ services:
     #                capabilities: [gpu]
     group_add:
       - "993"                   # REPLACE WITH YOUR ACTUAL HOST RENDER/VIDEO GID
+
+
+  threadfin:
+    image: fyb3roptik/threadfin
+    container_name: threadfin
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #ports:
+    #  - 34400:34400
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/threadfin/conf:/home/threadfin/conf
+      - ./config/threadfin/temp:/tmp/threadfin:rw
+    restart: unless-stopped
 #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
