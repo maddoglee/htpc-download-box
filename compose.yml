@@ -260,13 +260,16 @@ services:
       - REDIS_HOST=localhost
       - CELERY_BROKER_URL=redis://localhost:6379/0
       - DISPATCHARR_LOG_LEVEL=info
+      - LIBVA_DRIVER_NAME=iHD   # ensure use of Intel's iHD driver
     
     # Process Optimization (Highly Recommended for smooth streaming)
       - UWSGI_NICE_LEVEL=-5  # Gives higher priority to uWSGI/Streaming
       - CELERY_NICE_LEVEL=5   # Lowers priority for heavy EPG sync tasks
+    cap_add:
+      - SYS_NICE                # Required to allow UWSGI_NICE_LEVEL to go below 0
     # Optional for hardware acceleration
-    #devices:
-    #  - /dev/dri:/dev/dri  # For Intel/AMD GPU acceleration (VA-API)
+    devices:
+      - /dev/dri:/dev/dri  # For Intel/AMD GPU acceleration (VA-API)
     # Uncomment the following lines for NVIDIA GPU support
     # NVidia GPU support (requires NVIDIA Container Toolkit)
     #deploy:
@@ -276,6 +279,8 @@ services:
     #              - driver: nvidia
     #                count: all
     #                capabilities: [gpu]
+    group_add:
+      - "993"                   # REPLACE WITH YOUR ACTUAL HOST RENDER/VIDEO GID
 #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
