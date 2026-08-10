@@ -284,23 +284,23 @@ services:
     #  - "993"                   # REPLACE WITH YOUR ACTUAL HOST RENDER/VIDEO GID
 
 
-  threadfin:
-    image: fyb3roptik/threadfin
-    container_name: threadfin
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    #ports:
-    #  - 34400:34400
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/threadfin/conf:/home/threadfin/conf
-      - ./config/threadfin/temp:/tmp/threadfin:rw
-    restart: unless-stopped
+  # threadfin:
+  #   image: fyb3roptik/threadfin
+  #   container_name: threadfin
+  #   network_mode: "service:gluetun"
+  #   depends_on:
+  #     gluetun:
+  #       condition: service_healthy
+  #   #ports:
+  #   #  - 34400:34400
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #   volumes:
+  #     - ./config/threadfin/conf:/home/threadfin/conf
+  #     - ./config/threadfin/temp:/tmp/threadfin:rw
+  #   restart: unless-stopped
 #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
