@@ -15,7 +15,7 @@ services:
       - 5030:5030  # Slskd Web UI
       - 5031:5031  # slskd Port 5031
       - 50300:50300 # slskd Listening Port
-      - 9191:9191 # dispatcharr
+    #  - 9191:9191 # dispatcharr
       - 34400:34400 # threadfin
     dns:
       - 9.9.9.9 # Quad9
