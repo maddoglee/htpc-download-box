@@ -244,6 +244,20 @@ services:
       - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
       - ${DATA}/media/music:/data/music:ro
     
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    ports:
+      - "4533:4533"
+    environment:
+      ND_LOGLEVEL: "info"
+      ND_SESSIONTIMEOUT: "24h"
+      ND_BASEURL: ""
+    volumes:
+      - ./config/navidrome:/data
+      - ${DATA}/media/music:/data/music:ro  # Mount music folder as Read-Only
+    restart: unless-stopped
+
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     restart: unless-stopped
