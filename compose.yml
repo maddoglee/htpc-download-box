@@ -255,7 +255,7 @@ services:
       ND_BASEURL: ""
     volumes:
       - ./config/navidrome:/data
-      - ${DATA}/media/music:/data/music:ro  # Mount music folder as Read-Only
+      - ${DATA}/media/music:/music:ro  # Mount music folder as Read-Only
     restart: unless-stopped
 
   dispatcharr:
