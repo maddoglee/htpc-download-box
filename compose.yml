@@ -77,6 +77,7 @@ services:
     volumes:
       - ./config/qbittorrent:/config
       - ${LOCAL_DATA}/torrents:/torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
+      - ${MORE_DATA}/torrents:/more_torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
 
   prowlarr:
     image: linuxserver/prowlarr:latest
