@@ -240,7 +240,7 @@ services:
     restart: unless-stopped
 
   musicbrainz:
-    image: metabrainz/musicbrainz-server:latest
+    image: ghcr.io/linuxserver/musicbrainz:latest
     container_name: musicbrainz_mirror
     restart: unless-stopped
     ports:
@@ -252,7 +252,7 @@ services:
       - MUSICBRAINZ_SERVER_MODE=mirror
       - MUSICBRAINZ_USE_BRAINZCODE_SEARCH=1
       - MUSICBRAINZ_REPLICATION_ACCESS_TOKEN=${MUSICBRAINZTOKEN}
-      
+
   slskd:
     image: slskd/slskd:latest
     container_name: slskd
