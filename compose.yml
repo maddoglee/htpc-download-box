@@ -230,6 +230,7 @@ services:
       - TZ=${TZ}
       - PORT=8688
       - SLSKD_DOWNLOADS_PATH=/slskd-downloads
+ #     - MUSICBRAINZ_API_URL=http://musicbrainz_mirror:5000/ws/2/
     ports:
       - "8688:8688"
     volumes:
@@ -239,21 +240,21 @@ services:
       - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
-  musicbrainz:
-    image: ghcr.io/linuxserver/musicbrainz:latest
-    container_name: musicbrainz_mirror
-    restart: unless-stopped
-    ports:
-      - "5005:5000"
-    volumes:
- #     - ./mbdata:/media/dbdump
- #     - ./data:/var/lib/postgresql/data
-      - /mnt/frigate/musicbrainz_mirror/mbdata:/media/dbdump
-      - /mnt/frigate/musicbrainz_mirror/data:/var/lib/postgresql/data
-    environment:
-      - MUSICBRAINZ_SERVER_MODE=mirror
-      - MUSICBRAINZ_USE_BRAINZCODE_SEARCH=1
-      - MUSICBRAINZ_REPLICATION_ACCESS_TOKEN=${MUSICBRAINZTOKEN}
+#   musicbrainz:
+#     image: ghcr.io/linuxserver/musicbrainz:latest
+#     container_name: musicbrainz_mirror
+#     restart: unless-stopped
+#     ports:
+#       - "5005:5000"
+#     volumes:
+#  #     - ./mbdata:/media/dbdump
+#  #     - ./data:/var/lib/postgresql/data
+#       - /mnt/frigate/musicbrainz_mirror/mbdata:/media/dbdump
+#       - /mnt/frigate/musicbrainz_mirror/data:/var/lib/postgresql/data
+#     environment:
+#       - MUSICBRAINZ_SERVER_MODE=mirror
+#       - MUSICBRAINZ_USE_BRAINZCODE_SEARCH=1
+#       - MUSICBRAINZ_REPLICATION_ACCESS_TOKEN=${MUSICBRAINZTOKEN}
 
   slskd:
     image: slskd/slskd:latest
