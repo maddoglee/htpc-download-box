@@ -246,8 +246,10 @@ services:
     ports:
       - "5005:5000"
     volumes:
-      - ./mbdata:/media/dbdump
-      - ./data:/var/lib/postgresql/data
+ #     - ./mbdata:/media/dbdump
+ #     - ./data:/var/lib/postgresql/data
+      - /mnt/frigate/musicbrainz_mirror/mbdata:/media/dbdump
+      - /mnt/frigate/musicbrainz_mirror/data:/var/lib/postgresql/data
     environment:
       - MUSICBRAINZ_SERVER_MODE=mirror
       - MUSICBRAINZ_USE_BRAINZCODE_SEARCH=1
