@@ -277,7 +277,7 @@ services:
     volumes:
       - ./config/slskd:/app
       - ${DATA}/torrents/slskd/downloads:/app/downloads:rw  # Identical host path to droppedneedle's inbound folder
-      - ${DATA}:/data:ro
+      - ${DATA}/media/music:/data/music:ro
     
   navidrome:
     image: deluan/navidrome:latest
