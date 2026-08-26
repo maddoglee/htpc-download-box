@@ -230,15 +230,15 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - PORT=8688
-      - SLSKD_DOWNLOADS_PATH=/slskd-downloads
+      - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
  #     - MUSICBRAINZ_API_URL=http://musicbrainz_mirror:5000/ws/2/
     ports:
       - "8688:8688"
     volumes:
       - ./config/droppedneedle:/app/config
       - ./cache/droppedneedle:/app/cache
-      - ${DATA}/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
-      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+      - ${DATA}:/data:rw                # Maps to /mnt/storage/data/media/music
+#      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
 #   musicbrainz:
@@ -276,8 +276,8 @@ services:
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
       - ./config/slskd:/app
-      - ${LOCAL_DATA}/torrents/slskd/downloads:/app/downloads  # Identical host path to droppedneedle's inbound folder
-      - ${DATA}/media/music:/data/music:ro
+      - ${DATA}/torrents/slskd/downloads:/app/downloads:rw  # Identical host path to droppedneedle's inbound folder
+      - ${DATA}:/data:ro
     
   navidrome:
     image: deluan/navidrome:latest
