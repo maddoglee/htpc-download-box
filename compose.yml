@@ -238,7 +238,7 @@ services:
       - ./config/droppedneedle:/app/config
       - ./config/droppedneedle/cache:/app/cache
       - /mnt/storage/data/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
-      - /mnt/storage/data/torrents/slskd/downloads:slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
 #   musicbrainz:
@@ -276,8 +276,8 @@ services:
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
       - ./config/slskd:/app:rw
-      - ${DATA}/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
-      - ${DATA}/media/music:/music:rw
+      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
+      - /mnt/storage/data/media/music:/music:rw
     
   navidrome:
     image: deluan/navidrome:latest
