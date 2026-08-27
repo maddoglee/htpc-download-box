@@ -275,9 +275,9 @@ services:
       - SLSKD_SLSK_USERNAME=${SLSK_USERNAME}
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
-      - ./config/slskd:/app
+      - ./config/slskd:/app:rw
       - ${DATA}/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
-      - ${DATA}/media/music:/music:ro
+      - ${DATA}/media/music:/music:rw
     
   navidrome:
     image: deluan/navidrome:latest
