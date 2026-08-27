@@ -236,7 +236,7 @@ services:
       - "8688:8688"
     volumes:
       - ./config/droppedneedle:/app/config
-      - ./cache/droppedneedle:/app/cache
+      - ./config/droppedneedle/cache:/app/cache
       - ${DATA}:/data:rw                # Maps to /mnt/storage/data/media/music
 #      - ${LOCAL_DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
