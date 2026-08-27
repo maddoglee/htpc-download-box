@@ -258,7 +258,7 @@ services:
 #       - MUSICBRAINZ_REPLICATION_ACCESS_TOKEN=${MUSICBRAINZTOKEN}
 
   slskd:
-    image: slskd/slskd:0.25.1
+    image: slskd/slskd:latest
     container_name: slskd
     restart: always
     network_mode: "service:gluetun"
