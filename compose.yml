@@ -230,15 +230,15 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - PORT=8688
-      - SLSKD_DOWNLOADS_PATH=/music/slskd-downloads
+      - SLSKD_DOWNLOADS_PATH=/slskd-downloads
  #     - MUSICBRAINZ_API_URL=http://musicbrainz_mirror:5000/ws/2/
     ports:
       - "8688:8688"
     volumes:
       - ./config/droppedneedle:/app/config
       - ./config/droppedneedle/cache:/app/cache
-      - ${DATA}/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
-      - ${DATA}/torrents/slskd/downloads:/music/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+      - /mnt/storage/data/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
+      - /mnt/storage/data/torrents/slskd/downloads:slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
     restart: unless-stopped
 
 #   musicbrainz:
