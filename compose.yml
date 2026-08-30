@@ -15,7 +15,7 @@ services:
       - 5030:5030  # Slskd Web UI
       - 5031:5031  # slskd Port 5031
       - 50300:50300 # slskd Listening Port
-      - 8688:8688 # droppedneedle
+    #  - 8688:8688 # droppedneedle
     #  - 9191:9191 # dispatcharr
     #  - 34400:34400 # threadfin
     dns:
@@ -226,20 +226,20 @@ services:
   droppedneedle:
     image: droppedneedle/droppedneedle:latest
     container_name: droppedneedle
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
+#    network_mode: "service:gluetun"
+#    depends_on:
+#      gluetun:
+#        condition: service_healthy
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - PORT=8688
+#      - PORT=8688
       - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
       - LISTENBRAINZ_ENABLED=false
 #      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
-#    ports:
-#      - "8688:8688"
+    ports:
+      - "8688:8688"
     volumes:
       - ./config/droppedneedle:/app/config
       - ./config/droppedneedle/cache:/app/cache
