@@ -237,7 +237,7 @@ services:
       - PORT=8688
       - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
       - LISTENBRAINZ_ENABLED=false
-      - MUSICBRAINZ_API_URL=http://192.168.1.24:5050/ws/2/
+#      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
 #    ports:
 #      - "8688:8688"
     volumes:
