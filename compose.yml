@@ -283,7 +283,8 @@ services:
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
       - ./config/slskd:/app:rw
-      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
+#      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
+      - /mnt/storage/data:/data:rw
       - /mnt/storage/data/media/music:/music:rw
     
   navidrome:
