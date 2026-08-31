@@ -17,7 +17,7 @@ services:
       - 50300:50300 # slskd Listening Port
     #  - 8688:8688 # droppedneedle
     #  - 9191:9191 # dispatcharr
-    #  - 34400:34400 # threadfin
+
     dns:
       - 9.9.9.9 # Quad9
     #  - 192.168.1.21 # Your AdGuard IP 
@@ -77,7 +77,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ./config/qbittorrent:/config
-      - ${LOCAL_DATA}/torrents:/torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
+      - ${DATA}/torrents:/torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
       - ${MORE_DATA}/torrents:/more_torrents # Make sure this isn't a network connected folder. Torrents seem to get lots of errors.
 
   prowlarr:
@@ -95,88 +95,24 @@ services:
     volumes:
       - ./config/prowlarr:/config
   
-  autobrr:
-    container_name: autobrr
-    image: ghcr.io/autobrr/autobrr:latest
-    restart: unless-stopped
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    #logging:
-    #  driver: json-file
-    #  options:
-    #    max-file: ${DOCKERLOGGING_MAXFILE}
-    #    max-size: ${DOCKERLOGGING_MAXSIZE}
-    user: 1000:1000
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - ./config/autobrr:/config
-  
-  sonarr:
-    container_name: sonarr
-    image: linuxserver/sonarr:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/sonarr:/config
-      - ${DATA}:/data
-      - ${LOCAL_DATA}/torrents:/torrents
-  
-  radarr:
-    container_name: radarr
-    image: linuxserver/radarr:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/radarr:/config
-      - ${DATA}:/data
-      - ${LOCAL_DATA}/torrents:/torrents
-
-  bazarr:
-    container_name: bazarr
-    image: linuxserver/bazarr:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - UMASK_SET=022
-    volumes:
-      - ./config/bazarr:/config
-      - ${DATA}/media:/data/media
-
-  seerr:
-    container_name: seerr
-    image: ghcr.io/seerr-team/seerr:latest
-    init: true
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - LOG_LEVEL=debug
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - PORT=5055
-    volumes:
-      - ./config/seerr:/app/config
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 20s
-      timeout: 3s
-      interval: 15s
-      retries: 3
-
+  # autobrr:
+  #   container_name: autobrr
+  #   image: ghcr.io/autobrr/autobrr:latest
+  #   restart: unless-stopped
+  #   network_mode: "service:gluetun"
+  #   depends_on:
+  #     gluetun:
+  #       condition: service_healthy
+  #   #logging:
+  #   #  driver: json-file
+  #   #  options:
+  #   #    max-file: ${DOCKERLOGGING_MAXFILE}
+  #   #    max-size: ${DOCKERLOGGING_MAXSIZE}
+  #   user: 1000:1000
+  #   environment:
+  #     - TZ=${TZ}
+  #   volumes:
+  #     - ./config/autobrr:/config
   flaresolverr:
     container_name: flaresolverr
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -192,28 +128,110 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-  
-  profilarr:
-    image: santiagosayshey/profilarr:latest
-    container_name: profilarr
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr:latest
+    restart: unless-stopped
+  #  network_mode: host
     ports:
-      - "6868:6868"
-    volumes:
-      - ./config/profilarr:/config
+      - 8989:8989
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+    volumes:
+      - ./config/sonarr:/config
+      - ${DATA}:/data
+      - ${DATA}/torrents:/torrents
+  
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
     restart: unless-stopped
+#    network_mode: host
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/radarr:/config
+      - ${DATA}:/data
+      - ${DATA}/torrents:/torrents
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    ports:
+      - 8686:8686
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/lidarr:/config
+      - ${DATA}:/data
+      - ${DATA}/torrents:/torrents
+  bazarr:
+    container_name: bazarr
+    image: linuxserver/bazarr:latest
+    restart: unless-stopped
+  #  network_mode: host
+    ports:
+      - 6767:6767
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022
+    volumes:
+      - ./config/bazarr:/config
+      - ${DATA}/media:/data/media
+
+  seerr:
+    container_name: seerr
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    restart: unless-stopped
+  #  network_mode: host
+    ports:
+      - 5055:5055
+    environment:
+      - LOG_LEVEL=debug
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=5055
+    volumes:
+      - ./config/seerr:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+  
+  profilarr:
+    image: santiagosayshey/profilarr:latest
+    container_name: profilarr
+    restart: unless-stopped
+    ports:
+      - 6868:6868
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./config/profilarr:/config
 
   cleanuparr:
     image: ghcr.io/cleanuparr/cleanuparr:latest
     container_name: cleanuparr
     restart: unless-stopped
     ports:
-      - "11011:11011"
-    volumes:
-      - ./config/cleanuparr:/config
+      - 11011:11011
     environment:
       - PORT=11011
       - BASE_PATH=
@@ -221,48 +239,45 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-
-
-  droppedneedle:
-    image: droppedneedle/droppedneedle:latest
-    container_name: droppedneedle
-#    network_mode: "service:gluetun"
-#    depends_on:
-#      gluetun:
-#        condition: service_healthy
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-#      - PORT=8688
-      - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
-      - LISTENBRAINZ_ENABLED=false
-#      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
-    ports:
-      - "8688:8688"
     volumes:
-      - ./config/droppedneedle:/app/config
-      - ./config/droppedneedle/cache:/app/cache
-      - /mnt/storage/data/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
-      - /mnt/storage/data:/data:rw                                  # Maps to /mnt/storage/data
-#      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+      - ./config/cleanuparr:/config
+  
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
     restart: unless-stopped
+    ports:
+      - 9000:9000 # Standard HTTP Web UI
+      - 9443:9443 # HTTPS Web UI (optional)
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/portainer:/data
 
-#   musicbrainz:
-#     image: ghcr.io/linuxserver/musicbrainz:latest
-#     container_name: musicbrainz_mirror
-#     restart: unless-stopped
-#     ports:
-#       - "5005:5000"
-#     volumes:
-#  #     - ./mbdata:/media/dbdump
-#  #     - ./data:/var/lib/postgresql/data
-#       - /mnt/frigate/musicbrainz_mirror/mbdata:/media/dbdump
-#       - /mnt/frigate/musicbrainz_mirror/data:/var/lib/postgresql/data
+#   droppedneedle:
+#     image: droppedneedle/droppedneedle:latest
+#     container_name: droppedneedle
+# #    network_mode: "service:gluetun"
+# #    depends_on:
+# #      gluetun:
+# #        condition: service_healthy
 #     environment:
-#       - MUSICBRAINZ_SERVER_MODE=mirror
-#       - MUSICBRAINZ_USE_BRAINZCODE_SEARCH=1
-#       - MUSICBRAINZ_REPLICATION_ACCESS_TOKEN=${MUSICBRAINZTOKEN}
+#       - PUID=${PUID}
+#       - PGID=${PGID}
+#       - TZ=${TZ}
+# #      - PORT=8688
+#       - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
+#       - LISTENBRAINZ_ENABLED=false
+# #      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
+#     ports:
+#       - "8688:8688"
+#     volumes:
+#       - ./config/droppedneedle:/app/config
+#       - ./config/droppedneedle/cache:/app/cache
+#       - /mnt/storage/data/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
+#       - /mnt/storage/data:/data:rw                                  # Maps to /mnt/storage/data
+# #      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+#     restart: unless-stopped
 
   slskd:
     image: slskd/slskd:latest
@@ -283,15 +298,15 @@ services:
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
       - ./config/slskd:/app:rw
-#      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw  # Identical host path to droppedneedle's inbound folder
-      - /mnt/storage/data:/data:rw
-      - /mnt/storage/data/media/music:/music:rw
+      - ${DATA}:/data:rw
+      - ${DATA}/media/music:/music:rw
     
   navidrome:
     image: deluan/navidrome:latest
     container_name: navidrome
+    restart: unless-stopped
     ports:
-      - "4533:4533"
+      - 4533:4533
     environment:
       ND_LOGLEVEL: "info"
       ND_SESSIONTIMEOUT: "24h"
@@ -299,12 +314,11 @@ services:
     volumes:
       - ./config/navidrome:/data
       - ${DATA}/media/music:/music:ro  # Mount music folder as Read-Only
-    restart: unless-stopped
 
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
-    restart: unless-stopped
     container_name: dispatcharr
+    restart: unless-stopped
     #network_mode: "service:gluetun"
     #depends_on:
     #  gluetun:
@@ -341,24 +355,7 @@ services:
     #  - "993"                   # REPLACE WITH YOUR ACTUAL HOST RENDER/VIDEO GID
 
 
-  # threadfin:
-  #   image: fyb3roptik/threadfin
-  #   container_name: threadfin
-  #   network_mode: "service:gluetun"
-  #   depends_on:
-  #     gluetun:
-  #       condition: service_healthy
-  #   #ports:
-  #   #  - 34400:34400
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #   volumes:
-  #     - ./config/threadfin/conf:/home/threadfin/conf
-  #     - ./config/threadfin/temp:/tmp/threadfin:rw
-  #   restart: unless-stopped
-#   sportarr:
+ #   sportarr:
 #     image: sportarr/sportarr:latest
 #     container_name: sportarr
 #     restart: unless-stopped
@@ -386,15 +383,7 @@ services:
 #      - # You will need at least one extra volume for your media drive if using https://www.cross-seed.org/docs/tutorials/linking
 #    command: daemon
 #    restart: unless-stopped
-  # portainer:
-  #   container_name: portainer
-  #   image: portainer/portainer-ce:latest
-  #   restart: unless-stopped
-  #   network_mode: host
-  #   command: -H unix:///var/run/docker.sock --tunnel-port 8001
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./config/portainer:/data
+
 
 
 volumes:
