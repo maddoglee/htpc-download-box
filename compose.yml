@@ -161,7 +161,7 @@ services:
       - ${DATA}/torrents:/torrents
 
   lidarr:
-    image: lscr.io/linuxserver/lidarr:latest
+    image: lscr.io/linuxserver/lidarr:nightly
     container_name: lidarr
     restart: unless-stopped
     ports:
