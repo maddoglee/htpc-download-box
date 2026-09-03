@@ -294,7 +294,7 @@ services:
       - TZ=${TZ}
       - SLSKD_REMOTE_CONFIGURATION=true
       # Crucial: This environment variable sets your slskd API key
-      - SLSKD_HTTP_OPTIONS__API_KEY=${SLSKD_API_KEY}:admin
+      - SLSKD_HTTP_OPTIONS__API_KEY=${SLSKD_API_KEY}
       - SLSKD_SLSK_USERNAME=${SLSK_USERNAME}
       - SLSKD_SLSK_PASSWORD=${SLSK_PASSWORD}
     volumes:
