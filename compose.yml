@@ -36,7 +36,7 @@ services:
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - VPN_PORT_FORWARDING_PORTS_COUNT=3 # Tell Gluetun to request more than 1 port (Proton supports up to 5)
+      - VPN_PORT_FORWARDING_PORTS_COUNT=2 # Tell Gluetun to request more than 1 port (Proton supports up to 5)
       - HEALTH_TARGET_ADDRESS=google.com:443 # Fix healthcheck
     #  - HEALTHCHECK_VPN=on
       - FIREWALL=off
