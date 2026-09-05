@@ -255,30 +255,31 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/portainer:/data
 
-#   droppedneedle:
-#     image: droppedneedle/droppedneedle:latest
-#     container_name: droppedneedle
-# #    network_mode: "service:gluetun"
-# #    depends_on:
-# #      gluetun:
-# #        condition: service_healthy
-#     environment:
-#       - PUID=${PUID}
-#       - PGID=${PGID}
-#       - TZ=${TZ}
-# #      - PORT=8688
-#       - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
-#       - LISTENBRAINZ_ENABLED=false
-# #      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
-#     ports:
-#       - "8688:8688"
-#     volumes:
-#       - ./config/droppedneedle:/app/config
-#       - ./config/droppedneedle/cache:/app/cache
-#       - /mnt/storage/data/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
-#       - /mnt/storage/data:/data:rw                                  # Maps to /mnt/storage/data
-# #      - /mnt/storage/data/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
-#     restart: unless-stopped
+  droppedneedle:
+    image: droppedneedle/droppedneedle:latest
+    container_name: droppedneedle
+    restart: unless-stopped
+#    network_mode: "service:gluetun"
+#    depends_on:
+#      gluetun:
+#        condition: service_healthy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+#      - PORT=8688
+      - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
+      - LISTENBRAINZ_ENABLED=false
+#      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
+    ports:
+      - "8688:8688"
+    volumes:
+      - ./config/droppedneedle:/app/config
+      - ./config/droppedneedle/cache:/app/cache
+#      - ${DATA}/media/music:/music:rw                # Maps to /mnt/storage/data/media/music
+      - ${DATA}:/data:rw                                  # Maps to /mnt/storage/data
+#      - ${DATA}/torrents/slskd/downloads:/slskd-downloads:rw # Maps to /mnt/storage/data/torrents/slskd/downloads
+    
 
   slskd:
     image: slskd/slskd:latest
