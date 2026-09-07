@@ -161,20 +161,20 @@ services:
       - ${DATA}:/data
       - ${DATA}/torrents:/torrents
 
-  lidarr:
-    image: lscr.io/linuxserver/lidarr:nightly
-    container_name: lidarr
-    restart: unless-stopped
-    ports:
-      - 8686:8686
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ./config/lidarr:/config
-      - ${DATA}:/data
-      - ${DATA}/torrents:/torrents
+  # lidarr:
+  #   image: lscr.io/linuxserver/lidarr:nightly
+  #   container_name: lidarr
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8686:8686
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #   volumes:
+  #     - ./config/lidarr:/config
+  #     - ${DATA}:/data
+  #     - ${DATA}/torrents:/torrents
   bazarr:
     container_name: bazarr
     image: linuxserver/bazarr:latest
