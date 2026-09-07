@@ -268,7 +268,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
 #      - PORT=8688
-      - SLSKD_DOWNLOADS_PATH=/data/torrents/slskd/downloads
+      - SLSKD_DOWNLOADS_PATH=/data/torrents/lidarr
       - LISTENBRAINZ_ENABLED=false
 #      - MUSICBRAINZ_API_URL=http://192.168.1.24:5005/ws/2/
     ports:
