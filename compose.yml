@@ -15,7 +15,7 @@ services:
       - 5030:5030  # Slskd Web UI
       - 5031:5031  # slskd Port 5031
       - 50300:50300 # slskd Listening Port
-      - 8081:8081 # sabnzbd
+    #  - 8081:8081 # sabnzbd
     #  - 8688:8688 # droppedneedle
     #  - 9191:9191 # dispatcharr
 
@@ -304,23 +304,23 @@ services:
       - ${DATA}:/data:rw
       - ${DATA}/media/music:/music:rw
 
-  sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd:latest
-    container_name: sabnzbd
-    restart: unless-stopped
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - PORT=8081     
-    volumes:
-      - ./config/sabnzbd:/config
-      - ${DATA}/usenet/incomplete:/incomplete #optional
-      - ${DATA}/usenet/lidarr:/downloads #optional
+  # sabnzbd:
+  #   image: lscr.io/linuxserver/sabnzbd:latest
+  #   container_name: sabnzbd
+  #   restart: unless-stopped
+  #   network_mode: "service:gluetun"
+  #   depends_on:
+  #     gluetun:
+  #       condition: service_healthy
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #    # - PORT=8081     # this does nothing.. the port needs to be configured in sabnzbd.ini
+  #   volumes:
+  #     - ./config/sabnzbd:/config
+  #     - ${DATA}/usenet/incomplete:/incomplete #optional
+  #     - ${DATA}/usenet/lidarr:/downloads #optional
    
   navidrome:
     image: deluan/navidrome:latest
