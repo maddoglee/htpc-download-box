@@ -319,8 +319,8 @@ services:
       - PORT=8081     
     volumes:
       - ./config/sabnzbd:/config
-      - ${DATA}/torrents/incomplete:/incomplete-downloads #optional
-      - ${DATA}/torrents/lidarr:/downloads #optional
+      - ${DATA}/usenet/incomplete:/incomplete #optional
+      - ${DATA}/usenet/lidarr:/downloads #optional
    
   navidrome:
     image: deluan/navidrome:latest
