@@ -321,8 +321,6 @@ services:
       - ./config/sabnzbd:/config
       - ${DATA}/torrents/incomplete:/incomplete-downloads #optional
       - ${DATA}/torrents/lidarr:/downloads #optional
-    ports:
-      - 8081:8080
    
   navidrome:
     image: deluan/navidrome:latest
